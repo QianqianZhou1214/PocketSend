@@ -23,9 +23,4 @@ Deployment: Docker
 
 # Project Structure
 
-pocketsend/
-├── pocketsend-backend/               # Backend code (Spring Boot)
-├── pocketsend-frontend/              # Frontend code (React)
-├── postgresql/                       # Database initialization scripts
-└── docker-compose.yml                # Multi-container orchestration
-
+pocketsend/ ├── pocketsend-backend/ # Backend code (Spring Boot) ├── pocketsend-frontend/ # Frontend code (React) ├── postgresql/ # Database initialization scripts └── docker-compose.yml # Multi-container orchestration
