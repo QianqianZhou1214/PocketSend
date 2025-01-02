@@ -1,7 +1,7 @@
 # PocketSend
 A seamless and secure file-sharing platform designed for cross-device convenience. PocketSend allows users to effortlessly upload, manage, and transfer files between personal and public devices using just a password—no user account required.
 
-# Features
+## Features
 
 File Upload and Storage: Upload and securely store files in a PostgreSQL database.
 
@@ -11,7 +11,7 @@ Ease of Use: Paste images directly into the text box and copy text or images wit
 
 Docker Deployment: Deploy the entire application with a single command using Docker Compose.
 
-# Technology Stack
+## Technology Stack
 
 Backend: Java (Spring Boot)
 
@@ -20,8 +20,6 @@ Frontend: React
 Database: PostgreSQL
 
 Deployment: Docker
-
-# Project Structure
 
 ## Project Structure
 - **pocketsend/**
