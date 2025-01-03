@@ -3,7 +3,7 @@ A seamless and secure file-sharing platform designed for cross-device convenienc
 
 ## Features
 
-File Upload and Storage: Upload and securely store files in a PostgreSQL database.
+File Upload and Storage: Upload and securely store files in a MySQL database.
 
 Cross-Platform Access: Access the application from any device using a browser.
 
@@ -17,7 +17,7 @@ Backend: Java (Spring Boot)
 
 Frontend: React
 
-Database: PostgreSQL
+Database: MySQL
 
 Deployment: Docker
 
@@ -25,6 +25,6 @@ Deployment: Docker
 - **pocketsend/**
   - `pocketsend-backend/` - Backend code (Spring Boot)
   - `pocketsend-frontend/` - Frontend code (React)
-  - `postgresql/` - Database initialization scripts
+  - `mysql/` - Database initialization scripts
   - `docker-compose.yml` - Multi-container orchestration
 
