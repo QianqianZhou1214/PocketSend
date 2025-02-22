@@ -1,3 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;700&display=swap');
+
+.sidebar-header {
+  text-align: left;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 5px 5px;
+  color: darkgray;
+}
+
 .sidebar {
   position: fixed;
   top: 0;
@@ -7,7 +17,9 @@
   background: white;
   box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.2);
   transition: left 0.3s ease-in-out;
-  padding-top: 60px;
+  padding-top: 20px;
+  z-index: 1000;
+  font-family: 'Kanit', sans-serif;
 }
 
 .sidebar.open {

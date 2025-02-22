@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import SideBar from "./SideBar";
 import logo from "../assets/pocketsendlogo.jpg";
 import "./styles/NavBar.css";
@@ -6,9 +6,9 @@ import "./styles/NavBar.css";
 export default function Navbar() {
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
 
-  const toggleSideBar = () => {
-    setIsSideBarOpen(!isSideBarOpen);
-  };
+  const toggleSideBar = useCallback(() => {
+    setIsSideBarOpen(prev => !prev);
+  }, []);
 
   return (
     <>
