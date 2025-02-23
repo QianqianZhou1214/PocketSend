@@ -1,0 +1,31 @@
+.file-list {
+  width: 100%;
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: #fff;
+}
+
+.file-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.file-item:last-child {
+  border-bottom: none;
+}
+
+.file-size {
+  color: #888;
+  font-size: 14px;
+}
+
+.no-files {
+  text-align: center;
+  color: #666;
+  font-size: 14px;
+}
