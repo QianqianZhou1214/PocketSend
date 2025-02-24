@@ -44,6 +44,7 @@ export default function SendBox({ onSend }) {
           type: uploadedFile.type || "application/octet-stream",
           url: URL.createObjectURL(uploadedFile),
         });
+        setMessage(uploadedFile.name);
       };
       reader.readAsDataURL(uploadedFile);
     }
@@ -59,17 +60,11 @@ export default function SendBox({ onSend }) {
         <textarea
           type="text"
           className="sendbox-input"
-          placeholder="Type messages or paste images here..."
+          placeholder="Type a message or paste a image here..."
           value={message}
           onChange={handleChange}
           onPaste={handlePaste}
         ></textarea>
-
-        {file && (
-          <div className="file-preview">
-            <span>{file.name}</span>
-          </div>
-        )}
 
       <button className="sendbox-btn" onClick={handleSend}>
         <Send size={24} /> Send
