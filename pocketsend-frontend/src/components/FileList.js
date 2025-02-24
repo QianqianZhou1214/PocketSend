@@ -13,12 +13,10 @@ export default function FileList ({ files }) {
             </div>
 
             <div className="file-content">
-              {file.type.startsWith("image/") && (
+              {file.type.startsWith("image/") ? (
                 <img src={file.url} alt={file.name} className="file-thumbnail" />
-              )}
-
-              {file.type === "text" && (
-                <p className="file-text">{file.content}</p>
+              ) : (
+                <span className="file-name">{file.name}</span>
               )}
             </div>
 
@@ -29,11 +27,11 @@ export default function FileList ({ files }) {
                 </button>
               )}
 
-              {file.type.startsWith("image/") || file.type === "file" ? (
+              {file.type !== "text" && file.url && (
                 <a href={file.url} download={file.name} className="download-btn">
                   <ArrowDownToLine size={20} color="#fff" />
                 </a>
-              ) : null}
+              )}
             </div>
           </div>
         ))

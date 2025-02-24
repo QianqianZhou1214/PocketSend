@@ -1,19 +1,21 @@
 import React, { useState } from "react";
 import { Paperclip, Send } from "lucide-react";
+import "./styles/SendBox.css"
+
 
 export default function SendBox({ onSend }) {
   const [message, setMessage] = useState("");
-  const [image, setImage] = useState(null);
+  const [file, setFile] = useState(null);
 
   const handleChange = (e) => {
     setMessage(e.target.value);
   };
 
   const handleSend = () => {
-    if (message.trim() !== "" || image) {
-      onSend({ text: message, image });
+    if (message.trim() !== "" || file) {
+      onSend({ text: message, file });
       setMessage("");
-      setImage(null);
+      setFile(null);
     }
   };
 
@@ -22,33 +24,37 @@ export default function SendBox({ onSend }) {
     const items = event.clipboardData.items;
     for (const item of items) {
       if (item.type.startsWith("image/")) {
-        const file = item.getAsFile();
+        const pastedFile = item.getAsFile();
         const reader = new FileReader();
         reader.onload = () => {
-          setImage(reader.result);
+          setFile({ name: "Pasted Image", type: pastedFile.type, url: reader.result });
         };
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(pastedFile);
       }
     }
   };
 
   const handleFileSelect = (event) => {
-    const file = event.target.files[0];
-    if (file) {
+    const uploadedFile = event.target.files[0];
+    if (uploadedFile) {
       const reader = new FileReader();
       reader.onload = () => {
-        setImage(reader.result);
+        setFile({
+          name: uploadedFile.name,
+          type: uploadedFile.type || "application/octet-stream",
+          url: URL.createObjectURL(uploadedFile),
+        });
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(uploadedFile);
     }
   };
 
   return (
     <div className="sendbox">
       <label htmlFor="file-upload" className="add-file-btn">
-        <Paperclip size={24} />
+        <Paperclip size={24} /> Add
       </label>
-      <input id="file-upload" type="file" accept="image/*" onChange={handleFileSelect} hidden />
+      <input id="file-upload" type="file" onChange={handleFileSelect} hidden />
 
       <div className="input-area">
         <input
@@ -60,12 +66,16 @@ export default function SendBox({ onSend }) {
           onPaste={handlePaste}
         />
 
-        {image && <img src={image} alt="Pasted" className="preview-image" />}
+        {file && (
+          <div className="file-preview">
+            <span>{file.name}</span>
+          </div>
+        )}
 
       </div>
 
       <button className="sendbox-btn" onClick={handleSend}>
-        <Send size={24} />
+        <Send size={24} /> Send
       </button>
 
     </div>
