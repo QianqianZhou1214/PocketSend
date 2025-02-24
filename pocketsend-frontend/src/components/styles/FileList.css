@@ -67,21 +67,21 @@
 }
 
 .copy-btn {
-  background-color: #3498db;
+  background-color: lightslategray;
   color: white;
   border: none;
 }
 
 .copy-btn:hover {
-  background-color: #2980b9;
+  background-color: wheat;
 }
 
 .download-btn {
-  background-color: #2ecc71;
+  background-color: lightslategray;
   color: white;
   text-decoration: none;
 }
 
 .download-btn:hover {
-  background-color: #27ae60;
+  background-color: wheat;
 }

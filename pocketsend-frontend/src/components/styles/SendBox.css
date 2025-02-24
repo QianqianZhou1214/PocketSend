@@ -1,4 +1,4 @@
-/* 发送框 */
+
 .sendbox {
   display: flex;
   align-items: center;
@@ -12,7 +12,6 @@
   max-width: 800px;
 }
 
-/* 输入框（多行） */
 .sendbox-input {
   flex: 1;
   padding: 10px;
@@ -26,17 +25,17 @@
   outline: none;
 }
 
-/* 添加文件按钮 */
+
 .add-file-btn {
   margin-right: 10px;
   cursor: pointer;
-  color: #3498db;
+  color: grey;
 }
 
-/* 发送按钮 */
+
 .sendbox-btn {
   padding: 10px;
-  background-color: #2ecc71;
+  background-color: grey;
   color: white;
   border: none;
   border-radius: 5px;
