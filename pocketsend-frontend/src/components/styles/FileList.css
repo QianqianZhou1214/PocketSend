@@ -48,26 +48,22 @@
   margin-top: 10px;
 }
 
-.copy-btn {
+.copy-btn, .download-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
   padding: 5px 10px;
   background-color: #3498db;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin-right: 5px;
+  font-size: 14px;
+  text-decoration: none;
 }
 
 .copy-btn:hover {
   background-color: #2980b9;
-}
-
-.download-btn {
-  padding: 5px 10px;
-  background-color: #2ecc71;
-  color: white;
-  text-decoration: none;
-  border-radius: 5px;
 }
 
 .download-btn:hover {
