@@ -1,5 +1,6 @@
 import React from "react";
 import "./styles/FileList.css"
+import { Copy, ArrowDownToLine } from "lucide-react";
 
 export default function FileList ({ files }) {
   return (
@@ -7,8 +8,33 @@ export default function FileList ({ files }) {
       {files.length > 0 ? (
         files.map((file) => (
           <div key={file.id} className="file-item">
-            <span>{file.name}</span>
-            <span className="file-size">{file.size}</span>
+            <div className="file-header">
+              <span className="upload-time">{file.uploadTime}</span>
+            </div>
+
+            <div className="file-content">
+              {file.type.startsWith("image/") && (
+                <img src={file.url} alt={file.name} className="file-thumbnail" />
+              )}
+
+              {file.type === "text" && (
+                <p className="file-text">{file.content}</p>
+              )}
+            </div>
+
+            <div className="file-actions">
+              {file.type === "text" && (
+                <button className="copy-btn" onClick={() => navigator.clipboard.writeText(file.content)}>
+                  <Copy size={20} color="#fff" />
+                </button>
+              )}
+
+              {file.type.startsWith("image/") || file.type === "file" ? (
+                <a href={file.url} download={file.name} className="download-btn">
+                  <ArrowDownToLine size={20} color="#fff" />
+                </a>
+              ) : null}
+            </div>
           </div>
         ))
       ) : (
