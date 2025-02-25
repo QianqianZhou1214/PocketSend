@@ -1,4 +1,5 @@
 .file-list {
+  font-family: 'Inconsolata', sans-serif;
   display: flex;
   flex-direction: column;
   padding: 10px;
