@@ -2,11 +2,15 @@ import React from "react";
 import "./styles/FileList.css"
 import { Copy, ArrowDownToLine } from "lucide-react";
 
-export default function FileList ({ files }) {
+export default function FileList ({ files, searchQuery }) {
+  const filteredFiles = files.filter(file =>
+    file.content?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    file.name?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
   return (
     <div className="file-list">
-      {files.length > 0 ? (
-        files.map((file) => (
+      {filteredFiles.length > 0 ? (
+        filteredFiles.map((file) => (
           <div key={file.id} className="file-item">
             <div className="file-header">
               <span className="upload-time">{file.uploadTime}</span>

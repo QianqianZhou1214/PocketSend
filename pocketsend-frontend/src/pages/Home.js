@@ -22,7 +22,7 @@ export default function Home() {
   return (
     <div className="home">
       <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-      <FileList files={files} />
+      <FileList files={files} searchQuery={searchQuery} />
       <SendBox onSend={handleSend} />
     </div>
   );
