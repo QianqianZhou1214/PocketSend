@@ -1,10 +1,9 @@
 .file-list {
-  font-family: 'Inconsolata', sans-serif;
   display: flex;
   flex-direction: column;
   padding: 10px;
   overflow-y: auto;
-  max-height: calc(100vh - 80px);
+  max-height: calc(100vh - 120px);
   margin-bottom: 60px;
 }
 
@@ -12,11 +11,12 @@
   display: flex;
   flex-direction: column;
   padding: 10px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  background-color: #2a2a2a;
+  border-radius: 5px;
   margin-bottom: 10px;
-  max-width: 100%;
+  width: 90%;
+  max-width: 450px;
+
 }
 
 .file-header {
@@ -44,7 +44,7 @@
 
 .file-name {
   font-size: 14px;
-  color: #333;
+  color: whitesmoke;
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;

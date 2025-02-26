@@ -1,47 +1,45 @@
 @import url('https://fonts.googleapis.com/css2?family=Anton:wght@300;400;700&display=swap');
+
 .sendbox {
-  font-family: 'Anton', sans-serif;
-  display: flex;
-  align-items: center;
+  font-family: 'Anton' sans-serif;
   width: 100%;
   padding: 10px;
-  background-color: #fff;
+  background-color: #1e1e1e;
   position: fixed;
   bottom: 0;
   left: 0;
-  width: 100%;
-  max-width: 800px;
+  max-width: 450px;
+  z-index: 10;
 }
+
+
+.input-container {
+  display: flex;
+  align-items: center;
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px;
+}
+
 
 .sendbox-input {
-  font-family: 'Inconsolata' sans-serif;
+  font-family: 'Anton' sans-serif;
   flex: 1;
+  border: none;
+  background: transparent;
+  color: white;
   padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  min-height: 40px;
-  max-height: 100px;
-  overflow-y: auto;
-  resize: none;
   outline: none;
+  font-size: 16px;
 }
-
 
 .add-file-btn {
-  margin-right: 10px;
   cursor: pointer;
-  color: grey;
-}
-
-
-.sendbox-btn {
-  font-family: 'Anton', sans-serif;
-  padding: 10px;
-  background-color: rgb(182, 182, 182);
   color: white;
-  border: none;
-  border-radius: 5px;
-  font-size: 18px;
+  padding: 5px;
+}
+.sendbox-btn {
   cursor: pointer;
+  color: white;
+  padding: 5px;
 }

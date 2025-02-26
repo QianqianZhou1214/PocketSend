@@ -52,27 +52,26 @@ export default function SendBox({ onSend }) {
 
   return (
     <div className="sendbox">
-      <label htmlFor="file-upload" className="add-file-btn">
-        <Paperclip size={24} /> Add
-      </label>
-      <input id="file-upload" type="file" onChange={handleFileSelect} hidden />
+      <div className="input-container">
+        <label htmlFor="file-upload" className="add-file-btn">
+          <Paperclip size={24} />
+        </label>
+        <input id="file-upload" type="file" onChange={handleFileSelect} hidden />
 
-        <textarea
+        <input
           type="text"
           className="sendbox-input"
           placeholder="Type a message or paste a image here..."
           value={message}
           onChange={handleChange}
           onPaste={handlePaste}
-        ></textarea>
+        />
 
-      <button className="sendbox-btn" onClick={handleSend}>
-        <Send size={24} /> Send
-      </button>
-
+        <label className="sendbox-btn" onClick={handleSend}>
+          <Send size={24} />
+        </label>
+      </div>   
     </div>
   );
-  
-
 
 }
