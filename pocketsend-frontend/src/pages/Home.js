@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import SearchBar from "../components/SearchBar";
 import FileList from "../components/FileList";
 import SendBox from "../components/SendBox";
+import "./styles/Home.css"
 
 
 export default function Home() {

@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import SideBar from "./SideBar";
-import logo from "../assets/pocketsendlogo.jpg";
+import { Rocket } from "lucide-react";
 import "./styles/NavBar.css";
 
 export default function Navbar() {
@@ -14,7 +14,7 @@ export default function Navbar() {
     <>
       <nav className="navbar">
         <div className="logo" onClick={toggleSideBar}>
-          <img src={logo} alt="Logo" />
+          <Rocket size={24} className="logo" />PocketSend
         </div>
       </nav>
       <SideBar isOpen={isSideBarOpen} toggleSideBar={toggleSideBar} />

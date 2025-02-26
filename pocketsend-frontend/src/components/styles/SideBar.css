@@ -3,9 +3,9 @@
 .sidebar-header {
   text-align: left;
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 500;
   padding: 5px 5px;
-  color: darkgray;
+  color: white;
 }
 
 .sidebar {
@@ -14,7 +14,7 @@
   left: -250px;
   width: 250px;
   height: 100%;
-  background: white;
+  background-color: rgb(44, 44, 44);
   box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.2);
   transition: left 0.3s ease-in-out;
   padding-top: 20px;
@@ -35,8 +35,9 @@
   padding: 15px 20px;
   cursor: pointer;
   border-bottom: 1px solid #ddd;
+  color: white;
 }
 
 .sidebar ul li:hover {
-  background: #f4f4f4;
+  background-color: rgb(44, 44, 44);
 }
