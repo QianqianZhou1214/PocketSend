@@ -1,13 +1,11 @@
-.container {
+.home {
   display: flex;
   flex-direction: column;
-  align-items: center;
   width: 100%;
   max-width: 450px;
   height: 100vh;
-  background-color: black
+  background-color: rgb(44,44,44);
 }
-
 
 .navbar {
   width: 100%;
@@ -39,5 +37,6 @@
   position: fixed;
   bottom: 0;
 }
+
 
 

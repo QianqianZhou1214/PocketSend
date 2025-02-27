@@ -61,7 +61,7 @@ export default function SendBox({ onSend }) {
         <input
           type="text"
           className="sendbox-input"
-          placeholder="Type a message or paste a image here..."
+          placeholder="Type a message or paste an image here..."
           value={message}
           onChange={handleChange}
           onPaste={handlePaste}
