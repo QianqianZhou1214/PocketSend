@@ -16,6 +16,7 @@ export default function App() {
       setIsAuthenticated(true);
     } else {
       alert("Incorrect password!");
+      setIsAuthenticated(false);
     }
   };
 
