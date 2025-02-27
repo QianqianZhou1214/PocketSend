@@ -1,13 +1,16 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./styles/Login.css";
 
 export default function Login({ onLogin }) {
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if(password) {
       onLogin(password);
+      navigate("/");
     }
   };
 
