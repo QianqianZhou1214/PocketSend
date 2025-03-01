@@ -1,0 +1,84 @@
+.account-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #1e1e1e;
+  color: white;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  max-width: 700px;
+  margin: auto;
+  text-align: center;
+}
+
+.account-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90%;
+  max-width: 300px;
+}
+
+.account-info label {
+  font-size: 14px;
+  margin-top: 10px;
+  text-align: left;
+  width: 100%;
+}
+
+.account-info input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  text-align: center;
+}
+
+.account-info input:disabled {
+  background: rgba(255, 255, 255, 0.05);
+  color: gray;
+}
+
+.edit-btn, .save-btn, .logout-btn {
+  margin-top: 15px;
+  padding: 10px 15px;
+  width: 120px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.edit-btn {
+  background: #3498db;
+  color: white;
+}
+
+.save-btn {
+  background: #2ecc71;
+  color: white;
+}
+
+.logout-btn {
+  background: red;
+  color: white;
+}
+
+.edit-btn:hover {
+  background: #2980b9;
+}
+
+.save-btn:hover {
+  background: #27ae60;
+}
+
+.logout-btn:hover {
+  background: darkred;
+}
