@@ -31,7 +31,6 @@ export default function Sidebar({ isOpen, toggleSideBar }) {
       <ul>
         <li onClick={() => { navigate("/"); toggleSideBar(); }}>Home</li>
         <li onClick={() => { navigate("/profile"); toggleSideBar(); }}>Account</li>
-        <li onClick={() => { navigate("/login"); toggleSideBar(); }}>Logout</li>
       </ul>
     </div>
   );
