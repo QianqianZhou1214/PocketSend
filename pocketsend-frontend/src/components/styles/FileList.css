@@ -58,7 +58,7 @@
   gap: 10px;
 }
 
-.copy-btn, .download-btn {
+.copy-btn, .download-btn, .delete-btn {
   display: flex;
   align-items: center;
   gap: 5px;
@@ -66,37 +66,15 @@
   border-radius: 5px;
   cursor: pointer;
   font-size: 14px;
-}
-
-.copy-btn {
   background-color: lightslategray;
   color: white;
   border: none;
 }
 
-.copy-btn:hover {
-  background-color: wheat;
+.copy-btn:hover, .download-btn:hover, .delete-btn:hover {
+  background-color: rgb(7, 54, 85);
 }
 
-.download-btn {
-  background-color: lightslategray;
-  color: white;
-  text-decoration: none;
-}
-
-.download-btn:hover {
-  background-color: wheat;
-}
-
-.delete-btn {
-  background-color: lightslategray;
-  color: white;
-  text-decoration: none;
-}
-
-.delete-btn:hover {
-  background-color: wheat;
-}
 
 .no-files {
   color: white;
