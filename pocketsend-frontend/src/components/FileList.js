@@ -2,7 +2,7 @@ import React from "react";
 import "./styles/FileList.css"
 import { Copy, ArrowDownToLine, Trash2 } from "lucide-react";
 
-export default function FileList ({ files, searchQuery }) {
+export default function FileList ({ files, searchQuery, onDelete }) {
   const filteredFiles = files.filter(file =>
     file.content?.toLowerCase().includes(searchQuery.toLowerCase()) || 
     file.name?.toLowerCase().includes(searchQuery.toLowerCase())
