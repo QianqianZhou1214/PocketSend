@@ -88,6 +88,16 @@
   background-color: wheat;
 }
 
+.delete-btn {
+  background-color: lightslategray;
+  color: white;
+  text-decoration: none;
+}
+
+.delete-btn:hover {
+  background-color: wheat;
+}
+
 .no-files {
   color: white;
 }

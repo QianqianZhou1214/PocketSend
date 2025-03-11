@@ -20,10 +20,14 @@ export default function Home() {
     }]);
   };
 
+  const handleDelete = (fileId) => {
+    setFiles(files.filter((file) => file.id !== fileId));
+  };
+
   return (
     <div className="home">
       <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-      <FileList files={files} searchQuery={searchQuery} />
+      <FileList files={files} searchQuery={searchQuery} onDelete={handleDelete} />
       <SendBox onSend={handleSend} />
     </div>
   );

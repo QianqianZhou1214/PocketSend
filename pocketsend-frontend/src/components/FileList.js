@@ -1,12 +1,13 @@
 import React from "react";
 import "./styles/FileList.css"
-import { Copy, ArrowDownToLine } from "lucide-react";
+import { Copy, ArrowDownToLine, Trash2 } from "lucide-react";
 
 export default function FileList ({ files, searchQuery }) {
   const filteredFiles = files.filter(file =>
     file.content?.toLowerCase().includes(searchQuery.toLowerCase()) || 
     file.name?.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
   return (
     <div className="file-list">
       {filteredFiles.length > 0 ? (
@@ -42,6 +43,10 @@ export default function FileList ({ files, searchQuery }) {
                   <ArrowDownToLine size={20} color="#fff" />
                 </a>
               )}
+
+              <button className="delete-btn" onClick={() => onDelete(file.id)}>
+                <Trash2 size={20} color="#fff" />
+              </button>
             </div>
           </div>
         ))
