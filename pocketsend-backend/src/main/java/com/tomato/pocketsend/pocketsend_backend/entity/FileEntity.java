@@ -19,7 +19,7 @@ public class FileEntity {
     private String filetype;
 
     @Lob
-    @Column(nullable = false)
+    @Column(columnDefinition = "LONGBLOB", nullable = false)
     private byte[] content;
 
     @Column(nullable = false)
