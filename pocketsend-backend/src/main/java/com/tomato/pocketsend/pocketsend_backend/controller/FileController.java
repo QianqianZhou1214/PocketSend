@@ -24,8 +24,10 @@ public class FileController {
     @Autowired
     private FileService fileService;
 
+    @CrossOrigin(origins = "http://localhost:3000")
+
     @PostMapping("/upload")
-    public ResponseEntity<FileUploadResponse> uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<FileEntity> uploadFile(@RequestParam("file") MultipartFile file) {
         try {
             // save files to database
             FileEntity savedFile = fileService.saveFile(
@@ -33,19 +35,14 @@ public class FileController {
                     file.getContentType(),
                     file.getBytes()
             );
-            String baseUrl = System.getenv("SERVER_URL"); // "https://pocketsend.com"
-            if (baseUrl == null) {
-                baseUrl = "http://localhost:8080"; // default
-            }
-            String downloadUrl = baseUrl + "/api/files/" + savedFile.getId();
-            return ResponseEntity.ok(new FileUploadResponse(savedFile.getId(), savedFile.getFilename(), downloadUrl));
+            return ResponseEntity.ok(savedFile);
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id:[0-9]+}")
     public ResponseEntity<byte[]> getFile(@PathVariable long id) {
         return fileService.getFileById(id)
                 .map(file -> ResponseEntity.ok()
@@ -55,7 +52,7 @@ public class FileController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id:[0-9]+}")
     public ResponseEntity<String> deleteFile(@PathVariable long id) {
         fileService.deleteFile(id);
         return ResponseEntity.ok("File deleted successfully.");

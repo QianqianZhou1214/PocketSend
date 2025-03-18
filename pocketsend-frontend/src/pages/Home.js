@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SearchBar from "../components/SearchBar";
 import FileList from "../components/FileList";
 import SendBox from "../components/SendBox";
@@ -9,19 +9,60 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [files, setFiles] = useState([]);
 
-  const handleSend = (data) => {
-    setFiles(prev => [...prev, {
-      id: prev.length + 1,
-      name: data.file ? data.file.name : "Text Message",
-      type: data.file ? data.file.type : "text",
-      content: data.text,
-      url: data.file ? data.file.url : null,
-      uploadTime: new Date().toLocaleString()
-    }]);
+  const fetchFiles = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/api/files");
+      if (response.ok) {
+        const data = await response.json();
+        setFiles(data);
+      } else {
+        console.error("Fetching files failed: ", response.statusText);
+      }
+    } catch (error) {
+      console.error("Fetching files failed: ", error);
+    }
   };
 
-  const handleDelete = (fileId) => {
-    setFiles(files.filter((file) => file.id !== fileId));
+  useEffect(() => {
+    fetchFiles();
+  }, []);
+
+  const handleSend = async (data) => {
+    const formData = new FormData();
+    formData.append("file", data.file);
+
+    try {
+      const response = await fetch("http://localhost:8080/api/files/upload", {
+        method: "POST",
+        body: formData,
+        headers: {
+          
+        }
+      });
+      if (response.ok) {
+        const newFile = await response.json();
+        setFiles(prev => [...prev, newFile]);
+      } else {
+        console.error("Uploading failed: ", response.statusText);
+      }
+    } catch (error) {
+      console.error("Uploading failed: ", error);
+    }
+  };
+
+  const handleDelete = async (fileId) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/files/${fileId}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        setFiles(prevFiles => prevFiles.filter(file => file.id !== fileId));
+      } else {
+        console.error("Deleting failed: ", response.statusText)
+      }
+    } catch (error) {
+      console.error("Deleting failed: ", error);
+    }
   };
 
   return (
