@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RestController
@@ -27,13 +28,30 @@ public class FileController {
     @CrossOrigin(origins = "http://localhost:3000")
 
     @PostMapping("/upload")
-    public ResponseEntity<FileEntity> uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<FileEntity> uploadFile(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("text") String text) {
         try {
+            String filename = null;
+            String filetype = null;
+            byte[] content = null;
+
+            if (file != null) {
+                filename = file.getOriginalFilename();
+                filetype = file.getContentType();
+                content = file.getBytes();
+            } else if (text != null && !text.isEmpty()) {
+                filename = "text_message.txt";
+                filetype = "text/plain";
+                content = text.getBytes(StandardCharsets.UTF_8);
+            } else {
+                return ResponseEntity.badRequest().body(null);
+            }
             // save files to database
             FileEntity savedFile = fileService.saveFile(
-                    file.getOriginalFilename(),
-                    file.getContentType(),
-                    file.getBytes()
+                    filename,
+                    filetype,
+                    content
             );
             String baseUrl = System.getenv("SERVER_URL");
             if (baseUrl == null) {
