@@ -37,17 +37,8 @@ export default function SendBox({ onSend }) {
   const handleFileSelect = (event) => {
     const uploadedFile = event.target.files[0];
     if (uploadedFile) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setFile({
-          name: uploadedFile.name,
-          type: uploadedFile.type || "application/octet-stream",
-          url: URL.createObjectURL(uploadedFile),
-        });
-        setMessage(uploadedFile.name);
-      };
-      reader.readAsDataURL(uploadedFile);
-    }
+      setFile(uploadedFile);
+    };
   };
 
   return (

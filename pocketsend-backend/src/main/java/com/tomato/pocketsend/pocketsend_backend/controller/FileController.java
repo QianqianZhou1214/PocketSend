@@ -35,6 +35,14 @@ public class FileController {
                     file.getContentType(),
                     file.getBytes()
             );
+            String baseUrl = System.getenv("SERVER_URL");
+            if (baseUrl == null) {
+                baseUrl = "http://localhost:8080"; // default
+            }
+
+            String downloadUrl = baseUrl + "/api/files/" + savedFile.getId();
+            savedFile.setUrl(downloadUrl);
+
             return ResponseEntity.ok(savedFile);
         } catch (IOException e) {
             e.printStackTrace();

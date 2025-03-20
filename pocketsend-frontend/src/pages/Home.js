@@ -29,18 +29,44 @@ export default function Home() {
 
   const handleSend = async (data) => {
     const formData = new FormData();
+    if (data.text) {
+      formData.append("text", data.text);
+    }
+    if (data.file) {
+      formData.append("file", data.file);
+    }
+
+    console.log("📂 data.file:", data.file);
+    console.log("📋 data.text:", data.text);
+
+    // 验证文件类型是否为 File 或 Blob
+    if (data.file instanceof File) {
+      console.log("✅ 文件对象类型正确:", data.file.name);
+    } else {
+      console.error("❌ 文件对象类型错误:", typeof data.file);
+    }
+
     formData.append("file", data.file);
+
+    // 打印整个 FormData
+    for (let pair of formData.entries()) {
+      console.log("🔥 FormData key:", pair[0], "value:", pair[1]);
+    }
 
     try {
       const response = await fetch("http://localhost:8080/api/files/upload", {
         method: "POST",
         body: formData,
-        headers: {
-          
-        }
       });
       if (response.ok) {
         const newFile = await response.json();
+        console.log("data received", newFile);
+
+        console.log("url:", newFile.url);
+
+        if (!newFile.url) {
+          newFile.url = `http://localhost:8080/api/files/${newFile.id}`;
+        }
         setFiles(prev => [...prev, newFile]);
       } else {
         console.error("Uploading failed: ", response.statusText);

@@ -25,16 +25,20 @@ public class FileEntity {
     @Column(nullable = false)
     private LocalDateTime uploadedAt = LocalDateTime.now();
 
+    @Transient
+    private String url;
+
 
     public FileEntity() {
     }
 
-    public FileEntity(Long id, String filename, String filetype, byte[] content, LocalDateTime uploadedAt) {
+    public FileEntity(Long id, String filename, String filetype, byte[] content, LocalDateTime uploadedAt, String url) {
         this.id = id;
         this.filename = filename;
         this.filetype = filetype;
         this.content = content;
         this.uploadedAt = uploadedAt;
+        this.url = url;
     }
 
     public Long getId() {
@@ -75,5 +79,13 @@ public class FileEntity {
 
     public void setUploadedAt(LocalDateTime uploadedAt) {
         this.uploadedAt = uploadedAt;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }
