@@ -35,24 +35,7 @@ export default function Home() {
     if (data.file) {
       formData.append("file", data.file);
     }
-
-    console.log("📂 data.file:", data.file);
-    console.log("📋 data.text:", data.text);
-
-    // 验证文件类型是否为 File 或 Blob
-    if (data.file instanceof File) {
-      console.log("✅ 文件对象类型正确:", data.file.name);
-    } else {
-      console.error("❌ 文件对象类型错误:", typeof data.file);
-    }
-
-    formData.append("file", data.file);
-
-    // 打印整个 FormData
-    for (let pair of formData.entries()) {
-      console.log("🔥 FormData key:", pair[0], "value:", pair[1]);
-    }
-
+    
     try {
       const response = await fetch("http://localhost:8080/api/files/upload", {
         method: "POST",

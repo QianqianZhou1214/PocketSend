@@ -68,6 +68,18 @@ public class FileController {
 
     @GetMapping
     public ResponseEntity<List<FileEntity>> getAllFiles() {
-        return ResponseEntity.ok(fileService.getAllFiles());
+        List<FileEntity> files = fileService.getAllFiles();
+
+        String baseUrl = System.getenv("SERVER_URL");
+        if (baseUrl == null) {
+            baseUrl = "http://localhost:8080"; // default
+        }
+
+        for (FileEntity file : files) {
+            String downloadUrl = baseUrl + "/api/files/" + file.getId();
+            file.setUrl(downloadUrl);  // ensure every file has URL
+        }
+
+        return ResponseEntity.ok(files);
     }
 }
