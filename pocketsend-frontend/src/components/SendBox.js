@@ -38,6 +38,7 @@ export default function SendBox({ onSend }) {
     const uploadedFile = event.target.files[0];
     if (uploadedFile) {
       setFile(uploadedFile);
+      setMessage(uploadedFile.name);
     };
   };
 
