@@ -1,0 +1,74 @@
+# Node.js (Frontend)
+node_modules/
+.pnp/
+.pnp.js
+/coverage
+/build
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# Frontend build artifacts
+/dist/
+*.log
+.DS_Store
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# VS Code
+.vscode/
+
+# Java/Gradle (Backend)
+*.class
+*.jar
+*.war
+*.ear
+/build/
+out/
+.gradle/
+mvnw
+mvnw.cmd
+target/
+!**/src/main/**/target/
+!**/src/test/**/target/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# Maven
+*.mvn/
+.mvn/wrapper/maven-wrapper.jar
+HELP.md
+
+# Spring Boot specific
+spring.log
+
+# Logs
+logs
+*.log
+*.log.*
+
+# Temporary files
+*.swp
+*~
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
