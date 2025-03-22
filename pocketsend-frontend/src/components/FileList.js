@@ -18,7 +18,7 @@ export default function FileList ({ files, searchQuery, onDelete }) {
             </div>
 
             <div className="file-content">
-              {file.filetype === "text" && (
+              {file.filetype === "text/plain" && (
                 <p className="file-text">{file.content}</p>
               )}
 
@@ -26,13 +26,13 @@ export default function FileList ({ files, searchQuery, onDelete }) {
                 <img src={file.url} alt={file.filename} className="file-thumbnail" />
               )}
 
-              {file.filetype !== "text" && !file.filetype.startsWith("image/") && (
+              {file.filetype !== "text/plain" && !file.filetype.startsWith("image/") && (
                 <span className="file-name">{file.filename}</span>
               )}
             </div>
 
             <div className="file-actions">
-              {file.filetype === "text" && (
+              {file.filetype === "text/plain" && (
                 <button className="copy-btn" onClick={() => navigator.clipboard.writeText(file.content)}>
                   <Copy size={20} color="#fff" />
                 </button>

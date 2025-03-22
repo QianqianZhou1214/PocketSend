@@ -29,23 +29,22 @@ export default function Home() {
 
   const handleSend = async (data) => {
     const formData = new FormData();
-    if (data.text) {
+    if (data.text && data.text.trim() !== "") {
       formData.append("text", data.text);
     }
     if (data.file) {
       formData.append("file", data.file);
     }
-    
+
     try {
       const response = await fetch("http://localhost:8080/api/files/upload", {
         method: "POST",
         body: formData,
       });
+      console.log("Response status:", response.status);
+
       if (response.ok) {
         const newFile = await response.json();
-        console.log("data received", newFile);
-
-        console.log("url:", newFile.url);
 
         if (!newFile.url) {
           newFile.url = `http://localhost:8080/api/files/${newFile.id}`;

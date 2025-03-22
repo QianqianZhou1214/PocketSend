@@ -1,6 +1,7 @@
 package com.tomato.pocketsend.pocketsend_backend.controller;
 
 
+import com.fasterxml.jackson.databind.ser.Serializers;
 import com.tomato.pocketsend.pocketsend_backend.dto.FileUploadResponse;
 import com.tomato.pocketsend.pocketsend_backend.entity.FileEntity;
 import com.tomato.pocketsend.pocketsend_backend.service.FileService;
@@ -15,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/files")
@@ -29,14 +30,14 @@ public class FileController {
 
     @PostMapping("/upload")
     public ResponseEntity<FileEntity> uploadFile(
-            @RequestParam("file") MultipartFile file,
-            @RequestParam("text") String text) {
+            @RequestPart(value = "file", required = false) MultipartFile file,
+            @RequestPart(value = "text", required = false) String text) {
         try {
             String filename = null;
             String filetype = null;
             byte[] content = null;
 
-            if (file != null) {
+            if (file != null && !file.isEmpty()) {
                 filename = file.getOriginalFilename();
                 filetype = file.getContentType();
                 content = file.getBytes();
@@ -85,19 +86,30 @@ public class FileController {
     }
 
     @GetMapping
-    public ResponseEntity<List<FileEntity>> getAllFiles() {
+    public ResponseEntity<List<Map<String, Object>>> getAllFiles() {
         List<FileEntity> files = fileService.getAllFiles();
-
-        String baseUrl = System.getenv("SERVER_URL");
-        if (baseUrl == null) {
-            baseUrl = "http://localhost:8080"; // default
-        }
+        List<Map<String, Object>> response = new ArrayList<>();
 
         for (FileEntity file : files) {
-            String downloadUrl = baseUrl + "/api/files/" + file.getId();
-            file.setUrl(downloadUrl);  // ensure every file has URL
+            Map<String, Object> fileData = new HashMap<>();
+            fileData.put("id", file.getId());
+            fileData.put("filename", file.getFilename());
+            fileData.put("filetype", file.getFiletype());
+            fileData.put("uploadedAt", file.getUploadedAt());
+
+            // if text, convert byte[] to String
+            if ("text/plain".equals(file.getFiletype())) {
+                fileData.put("content", new String(file.getContent(), StandardCharsets.UTF_8));
+            } else {
+                // other file types, Base64
+                String base64Content = Base64.getEncoder().encodeToString(file.getContent());
+                fileData.put("content", base64Content);
+                fileData.put("url", "data:" + file.getFiletype() + ";base64," + base64Content);
+            }
+
+            response.add(fileData);
         }
 
-        return ResponseEntity.ok(files);
+        return ResponseEntity.ok(response);
     }
 }
