@@ -25,11 +25,8 @@ export default function SendBox({ onSend }) {
     for (const item of items) {
       if (item.type.startsWith("image/")) {
         const pastedFile = item.getAsFile();
-        const reader = new FileReader();
-        reader.onload = () => {
-          setFile({ name: "Pasted Image", type: pastedFile.type, url: reader.result });
-        };
-        reader.readAsDataURL(pastedFile);
+        setFile(pastedFile);
+        setMessage("Pasted Image");
       }
     }
   };
