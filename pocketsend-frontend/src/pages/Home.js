@@ -44,12 +44,7 @@ export default function Home() {
       console.log("Response status:", response.status);
 
       if (response.ok) {
-        const newFile = await response.json();
-
-        if (!newFile.url) {
-          newFile.url = `http://localhost:8080/api/files/${newFile.id}`;
-        }
-        setFiles(prev => [...prev, newFile]);
+        await fetchFiles();
       } else {
         console.error("Uploading failed: ", response.statusText);
       }
