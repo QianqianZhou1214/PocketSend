@@ -1,8 +1,6 @@
 package com.tomato.pocketsend.pocketsend_backend.controller;
 
 
-import com.fasterxml.jackson.databind.ser.Serializers;
-import com.tomato.pocketsend.pocketsend_backend.dto.FileUploadResponse;
 import com.tomato.pocketsend.pocketsend_backend.entity.FileEntity;
 import com.tomato.pocketsend.pocketsend_backend.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;

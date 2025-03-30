@@ -8,6 +8,7 @@ import "./styles/Home.css"
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [files, setFiles] = useState([]);
+  const [ws, setWs] = useState(null);
 
   const fetchFiles = async () => {
     try {
@@ -25,6 +26,26 @@ export default function Home() {
 
   useEffect(() => {
     fetchFiles();
+
+    const socket = new WebSocket("ws://localhost:8080/ws");
+
+    socket.onopen = () => {
+      console.log("WebSocket connection established");
+    };
+
+    socket.onmessage = (event) => {
+      console.log("WebSocket message received: ", event.data);
+      fetchFiles();
+    };
+
+    socket.onclose = () => {
+      console.log("WebSocket connection closed");
+    };
+
+    setWs(socket);
+    return () => {
+      socket.close();
+    };
   }, []);
 
   const handleSend = async (data) => {
