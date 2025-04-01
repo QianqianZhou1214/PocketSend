@@ -3,6 +3,7 @@ package com.tomato.pocketsend.pocketsend_backend.controller;
 
 import com.tomato.pocketsend.pocketsend_backend.entity.FileEntity;
 import com.tomato.pocketsend.pocketsend_backend.service.FileService;
+import com.tomato.pocketsend.pocketsend_backend.service.WebSocketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,12 +25,15 @@ public class FileController {
     @Autowired
     private FileService fileService;
 
-    @CrossOrigin(origins = "http://localhost:3000")
+    @Autowired
+    private WebSocketService webSocketService;
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/upload")
     public ResponseEntity<FileEntity> uploadFile(
             @RequestPart(value = "file", required = false) MultipartFile file,
             @RequestPart(value = "text", required = false) String text) {
+
         try {
             String filename = null;
             String filetype = null;
@@ -59,6 +63,8 @@ public class FileController {
 
             String downloadUrl = baseUrl + "/api/files/" + savedFile.getId();
             savedFile.setUrl(downloadUrl);
+
+            webSocketService.broadcastMessage("refresh");
 
             return ResponseEntity.ok(savedFile);
         } catch (IOException e) {

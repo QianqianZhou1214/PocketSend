@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import SearchBar from "../components/SearchBar";
 import FileList from "../components/FileList";
 import SendBox from "../components/SendBox";
 import "./styles/Home.css"
+import SessionManager from "../components/SessionManager";
 
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [files, setFiles] = useState([]);
-  const [ws, setWs] = useState(null);
+  const wsRef = useRef(null);
 
   const fetchFiles = async () => {
     try {
@@ -28,6 +29,7 @@ export default function Home() {
     fetchFiles();
 
     const socket = new WebSocket("ws://localhost:8080/ws");
+    wsRef.current = socket;
 
     socket.onopen = () => {
       console.log("WebSocket connection established");
@@ -42,7 +44,6 @@ export default function Home() {
       console.log("WebSocket connection closed");
     };
 
-    setWs(socket);
     return () => {
       socket.close();
     };
@@ -91,6 +92,7 @@ export default function Home() {
 
   return (
     <div className="home">
+      <SessionManager />
       <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       <FileList files={files} searchQuery={searchQuery} onDelete={handleDelete} />
       <SendBox onSend={handleSend} />

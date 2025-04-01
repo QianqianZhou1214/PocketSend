@@ -1,5 +1,6 @@
 package com.tomato.pocketsend.pocketsend_backend.service;
 
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketHandler;
@@ -12,6 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Service
+@Component
 public class WebSocketService implements WebSocketHandler {
 
     private final Set<WebSocketSession> sessions = Collections.synchronizedSet(new HashSet<>());
