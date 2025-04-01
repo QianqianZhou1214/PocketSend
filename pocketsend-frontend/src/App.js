@@ -7,7 +7,9 @@ import Login from './pages/Login';
 import Account from './pages/Account';
 
 export default function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return localStorage.getItem("isAuthenticated") === "true";
+  });
   const correctPassword = "12345"
 
   const [user, setUser] = useState({
@@ -17,18 +19,21 @@ export default function App() {
   });
 
   const handleLogin = (password) => {
-    console.log("mima", password);
+    console.log("pw", password);
     if(password === correctPassword) {
       console.log("loading");
       setIsAuthenticated(true);
+      localStorage.setItem("isAuthenticated", "true");
     } else {
       alert("Incorrect password!");
       setIsAuthenticated(false);
+      localStorage.removeItem("isAuthenticated");
     }
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
+    localStorage.removeItem("isAuthenticated");
   };
 
   const handleUpdateUser = (updatedUser) => {
