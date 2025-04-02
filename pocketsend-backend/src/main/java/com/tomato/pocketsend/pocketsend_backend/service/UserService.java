@@ -8,27 +8,26 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
+    // logic for registration
 
     @Autowired
     private UserRepository userRepository;
 
-    public User registerUser(String username, String email, String password) {
+    public User registerUser(String username, String email, String password) throws Exception {
+        if (userRepository.findByUsername(username).isPresent()) {
+            throw new Exception("Username already exists");
+        }
+        if (userRepository.findByEmail(email).isPresent()) {
+            throw new Exception("Email already registered");
+        }
+
         User user = new User();
         user.setUsername(username);
         user.setEmail(email);
-        user.setPassword(password);
+        user.setPassword(PasswordUtil.hashPassword(password));
         return userRepository.save(user);
     }
 
-    public boolean validateCredentials(String username, String password) {
-        return userRepository.findByUsername(username)
-                .map(user -> PasswordUtil.matches(password, user.getPassword()))
-                .orElse(false);
-    }
-
-    public User getUserByUsername(String username) {
-        return userRepository.findByUsername(username).orElse(null);
-    }
 }
 
 
