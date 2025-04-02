@@ -1,25 +1,39 @@
 # PocketSend
-A seamless and secure file-sharing platform designed for cross-device convenience. PocketSend allows users to effortlessly upload, manage, and transfer files between personal and public devices using just a password—no user account required.
+PocketSend is a full-stack file-sharing web application that allows users to upload, view, and download text, images, and files across multiple devices. It supports real-time synchronization with WebSockets, user authentication, session timeout handling, and per-user file isolation.
 
-## Features
+## 🔧 Features
+✅ Core Functionality
+Upload files or plain text
 
-File Upload and Storage: Upload and securely store files in a MySQL database.
+View uploaded content (text, image preview, or downloadable link)
 
-Cross-Platform Access: Access the application from any device using a browser.
+Copy, download, or delete content with one click
 
-Ease of Use: Paste images directly into the text box and copy text or images with a single click.
+Real-time updates using WebSockets (no manual refresh needed)
 
-Docker Deployment: Deploy the entire application with a single command using Docker Compose.
+Paste images directly into the text area
 
-## Technology Stack
+## 👥 User Management
+Registration and login (via email or username)
 
-Backend: Java (Spring Boot)
+Passwords securely stored with hashing
 
-Frontend: React
+Session-based login with 30-minute inactivity timeout
 
-Database: MySQL
+Session activity auto-refreshes with user interaction
 
-Deployment: Docker
+Each user can only access their own files
+
+## 🧠 Architecture
+Frontend: React.js
+
+Backend: Spring Boot (Java)
+
+Database: MySQL (Dockerized)
+
+Deployment: Docker Compose for full stack
+
+Real-time: WebSocket support with multi-user broadcasting
 
 ## Project Structure
 - **pocketsend/**
