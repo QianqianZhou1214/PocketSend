@@ -28,6 +28,10 @@ public class FileEntity {
     @Transient
     private String url;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
 
     public FileEntity() {
     }
