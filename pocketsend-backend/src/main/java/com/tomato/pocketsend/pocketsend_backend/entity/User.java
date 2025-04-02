@@ -14,16 +14,20 @@ public class User {
     private String username;
 
     @Column(nullable = false)
-    private String passwordHash;
+    private String email;
+
+    @Column(nullable = false)
+    private String password;
 
     public User() {
 
     }
 
-    public User(long id, String username, String passwordHash) {
+    public User(long id, String username, String email, String password) {
         this.id = id;
         this.username = username;
-        this.passwordHash = passwordHash;
+        this.email = email;
+        this.password = password;
     }
 
     public long getId() {
@@ -42,11 +46,19 @@ public class User {
         this.username = username;
     }
 
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getEmail() {
+        return email;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
