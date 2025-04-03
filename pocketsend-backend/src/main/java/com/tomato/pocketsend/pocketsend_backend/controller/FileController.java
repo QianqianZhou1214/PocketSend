@@ -2,8 +2,10 @@ package com.tomato.pocketsend.pocketsend_backend.controller;
 
 
 import com.tomato.pocketsend.pocketsend_backend.entity.FileEntity;
+import com.tomato.pocketsend.pocketsend_backend.entity.User;
 import com.tomato.pocketsend.pocketsend_backend.service.FileService;
 import com.tomato.pocketsend.pocketsend_backend.service.WebSocketService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -32,7 +34,14 @@ public class FileController {
     @PostMapping("/upload")
     public ResponseEntity<FileEntity> uploadFile(
             @RequestPart(value = "file", required = false) MultipartFile file,
-            @RequestPart(value = "text", required = false) String text) {
+            @RequestPart(value = "text", required = false) String text,
+            HttpSession session) {
+
+        Object userObj = session.getAttribute("user");
+        if (userObj == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        User user = (User) userObj;
 
         try {
             String filename = null;
@@ -54,7 +63,8 @@ public class FileController {
             FileEntity savedFile = fileService.saveFile(
                     filename,
                     filetype,
-                    content
+                    content,
+                    user
             );
             String baseUrl = System.getenv("SERVER_URL");
             if (baseUrl == null) {
@@ -84,14 +94,34 @@ public class FileController {
     }
 
     @DeleteMapping("/{id:[0-9]+}")
-    public ResponseEntity<String> deleteFile(@PathVariable long id) {
+    public ResponseEntity<String> deleteFile(@PathVariable long id, HttpSession session) {
+        Object userObj = session.getAttribute("user");
+        if (userObj == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        User user = (User) userObj;
+
+        Optional<FileEntity> fileOpt = fileService.getFileById(id);
+        if (fileOpt.isEmpty() || fileOpt.get().getOwner().getId() != user.getId()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not allowed to delete this file.");
+        }
+
         fileService.deleteFile(id);
         return ResponseEntity.ok("File deleted successfully.");
     }
 
     @GetMapping
-    public ResponseEntity<List<Map<String, Object>>> getAllFiles() {
-        List<FileEntity> files = fileService.getAllFiles();
+    public ResponseEntity<List<Map<String, Object>>> getAllFiles(HttpSession session) {
+        // get files only for current user
+        Object userObj = session.getAttribute("user");
+        if (userObj == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        User user = (User) userObj;
+
+        List<FileEntity> files = fileService.getFilesForUser(user);
         List<Map<String, Object>> response = new ArrayList<>();
 
         for (FileEntity file : files) {

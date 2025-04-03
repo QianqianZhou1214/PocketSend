@@ -13,7 +13,7 @@ public class AuthService {
     // login authenticate logic
 
     @Autowired
-    private UserRepository userRepository；
+    private UserRepository userRepository;
 
     public User authenticate(String identifier, String rawPassword) throws Exception {
         Optional<User> userOpt = identifier.contains("@")

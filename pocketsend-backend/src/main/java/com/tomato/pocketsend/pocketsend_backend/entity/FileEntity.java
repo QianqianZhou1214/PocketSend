@@ -30,19 +30,20 @@ public class FileEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private User owner;
 
 
     public FileEntity() {
     }
 
-    public FileEntity(Long id, String filename, String filetype, byte[] content, LocalDateTime uploadedAt, String url) {
+    public FileEntity(Long id, String filename, String filetype, byte[] content, LocalDateTime uploadedAt, String url, User owner) {
         this.id = id;
         this.filename = filename;
         this.filetype = filetype;
         this.content = content;
         this.uploadedAt = uploadedAt;
         this.url = url;
+        this.owner = owner;
     }
 
     public Long getId() {
@@ -91,5 +92,13 @@ public class FileEntity {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 }
