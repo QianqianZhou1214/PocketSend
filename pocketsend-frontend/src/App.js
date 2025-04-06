@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Account from './pages/Account';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import Register from './pages/Register';
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth();
@@ -51,6 +52,7 @@ export default function App() {
       <Router>
         <Navbar />
         <Routes>
+          <Route path="/register" element={<Register />} />
           <Route path="/" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />
           <Route path="/profile" element={isAuthenticated ? <Account user={user} onLogout={handleLogout} onUpdateUser={handleUpdateUser} /> : <Navigate to="/login" />} />
           <Route path="/login" element={ <Login onLogin={handleLogin}/>} />

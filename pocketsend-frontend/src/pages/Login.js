@@ -55,6 +55,7 @@ export default function Login() {
         <button type="submit" disabled={!identifier || !password}>
           Login
         </button>
+        <p className="register-request">Don't have an account? <a href="/register">Register here</a></p>
         {error && <p className="error-msg">{error}</p>}
       </form>
     </div>
