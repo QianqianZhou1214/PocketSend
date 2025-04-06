@@ -9,10 +9,10 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (identifier, password) => {
     try {
-      const response = await fetch("http://localhost:8080/api/login", {
+      const response = await fetch("http://localhost:8080/api/auth/login", {
         method: "POST",
-        headers: { "Context-Type": "application/json" },
-        body: JSON.stringify({ identifier, password }),
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ identifier, password }),
         credentials: "include"
       });
 
@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    await fetch("http://localhost:8080/api/logout", {
+    await fetch("http://localhost:8080/api/auth/logout", {
       method: "POST",
       credentials: "include"
     });

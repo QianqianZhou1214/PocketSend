@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/auth")
 public class AuthController {
     @Autowired
     private UserService userService;
@@ -16,6 +16,7 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/register")
+    @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
     public User register(@RequestParam String username,
                          @RequestParam String email,
                          @RequestParam String password) throws Exception {
