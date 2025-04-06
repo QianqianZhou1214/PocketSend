@@ -5,6 +5,12 @@ import Navbar from './components/NavBar';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Account from './pages/Account';
+import { AuthProvider, useAuth } from './context/AuthContext';
+
+function ProtectedRoute({ children }) {
+  const { user } = useAuth();
+  return user ? children : <Navigate to="/login" />;
+}
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -41,13 +47,16 @@ export default function App() {
   };
 
   return (
-    <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />
-        <Route path="/profile" element={isAuthenticated ? <Account user={user} onLogout={handleLogout} onUpdateUser={handleUpdateUser} /> : <Navigate to="/login" />} />
-        <Route path="/login" element={ <Login onLogin={handleLogin}/>} />
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />
+          <Route path="/profile" element={isAuthenticated ? <Account user={user} onLogout={handleLogout} onUpdateUser={handleUpdateUser} /> : <Navigate to="/login" />} />
+          <Route path="/login" element={ <Login onLogin={handleLogin}/>} />
+        </Routes>
+      </Router>
+    </AuthProvider>
+    
   );
 }
