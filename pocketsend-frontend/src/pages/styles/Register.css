@@ -1,4 +1,4 @@
-.login-container {
+.auth-form {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -13,7 +13,7 @@
   margin: auto;
 }
 
-.login-container input {
+.auth-form input {
   width: 90%;
   max-width: 300px;
   padding: 10px;
@@ -25,11 +25,9 @@
   background: rgba(255,255,255,0.1);
   color: white;
   text-align: center;
-  display: flex;
-  flex-direction: column;
 }
 
-.login-container button {
+.auth-form button {
   padding: 10px 15px;
   background: #3498db;
   color: white;
@@ -40,16 +38,7 @@
   width: 100px;
 }
 
-.login-container button:disabled {
+.auth-form button:disabled {
   background: gray;
   cursor: not-allowed;
-}
-
-.register-request a {
-  color: #b3b5b0;
-  text-decoration: underline;
-}
-
-.register-request a:hover {
-  color: #ffff;
 }
