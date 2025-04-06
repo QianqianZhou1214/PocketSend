@@ -18,7 +18,7 @@ public class AuthService {
     public User authenticate(String identifier, String rawPassword) throws Exception {
         Optional<User> userOpt = identifier.contains("@")
                 ? userRepository.findByEmail(identifier)
-                : userRepository.findByEmail(identifier);
+                : userRepository.findByUsername(identifier);
 
         if (userOpt.isEmpty()) throw new Exception("User not found");
 
