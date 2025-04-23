@@ -1,4 +1,4 @@
-package com.tomato.pocketsend.pocketsend_backend.dao;
+package com.tomato.pocketsend.pocketsend_backend.repositories;
 
 import com.tomato.pocketsend.pocketsend_backend.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
