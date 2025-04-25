@@ -1,11 +1,14 @@
 package com.tomato.pocketsend.pocketsend_backend.controller;
 
 
-import com.tomato.pocketsend.pocketsend_backend.entity.FileEntity;
+import com.tomato.pocketsend.pocketsend_backend.entity.File;
 import com.tomato.pocketsend.pocketsend_backend.entity.User;
 import com.tomato.pocketsend.pocketsend_backend.service.FileService;
+import com.tomato.pocketsend.pocketsend_backend.service.FileServiceImpl;
 import com.tomato.pocketsend.pocketsend_backend.service.WebSocketService;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,20 +22,23 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+@Slf4j
 @RestController
-@RequestMapping("/api/files")
 @CrossOrigin("*")
+@RequiredArgsConstructor
 public class FileController {
 
-    @Autowired
-    private FileService fileService;
+    public static final String FILE_PATH = "/api/files";
+    public static final String FILE_PATH_ID = FILE_PATH + "/{fileId}";
+
+    private final FileService fileService;
 
     @Autowired
     private WebSocketService webSocketService;
 
     @CrossOrigin(origins = "http://localhost:3000")
-    @PostMapping("/upload")
-    public ResponseEntity<FileEntity> uploadFile(
+    @PostMapping(FILE_PATH)
+    public ResponseEntity<File> uploadFile(
             @RequestPart(value = "file", required = false) MultipartFile file,
             @RequestPart(value = "text", required = false) String text,
             HttpSession session) {
@@ -60,7 +66,7 @@ public class FileController {
                 return ResponseEntity.badRequest().body(null);
             }
             // save files to database
-            FileEntity savedFile = fileService.saveFile(
+            File savedFile = fileServiceImpl.saveFile(
                     filename,
                     filetype,
                     content,
@@ -83,9 +89,9 @@ public class FileController {
         }
     }
 
-    @GetMapping("/{id:[0-9]+}")
+    @GetMapping(value = FILE_PATH_ID)
     public ResponseEntity<byte[]> getFile(@PathVariable long id) {
-        return fileService.getFileById(id)
+        return fileServiceImpl.getFileById(id)
                 .map(file -> ResponseEntity.ok()
                         .contentType(MediaType.valueOf(file.getFiletype()))
                         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
@@ -93,7 +99,7 @@ public class FileController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id:[0-9]+}")
+    @DeleteMapping(value = FILE_PATH_ID)
     public ResponseEntity<String> deleteFile(@PathVariable long id, HttpSession session) {
         Object userObj = session.getAttribute("user");
         if (userObj == null) {
@@ -102,16 +108,16 @@ public class FileController {
 
         User user = (User) userObj;
 
-        Optional<FileEntity> fileOpt = fileService.getFileById(id);
+        Optional<File> fileOpt = fileServiceImpl.getFileById(id);
         if (fileOpt.isEmpty() || fileOpt.get().getOwner().getId() != user.getId()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not allowed to delete this file.");
         }
 
-        fileService.deleteFile(id);
+        fileServiceImpl.deleteFile(id);
         return ResponseEntity.ok("File deleted successfully.");
     }
 
-    @GetMapping
+    @GetMapping(value = FILE_PATH)
     public ResponseEntity<List<Map<String, Object>>> getAllFiles(HttpSession session) {
         // get files only for current user
         Object userObj = session.getAttribute("user");
@@ -121,10 +127,10 @@ public class FileController {
 
         User user = (User) userObj;
 
-        List<FileEntity> files = fileService.getFilesForUser(user);
+        List<File> files = fileServiceImpl.getFilesForUser(user);
         List<Map<String, Object>> response = new ArrayList<>();
 
-        for (FileEntity file : files) {
+        for (File file : files) {
             Map<String, Object> fileData = new HashMap<>();
             fileData.put("id", file.getId());
             fileData.put("filename", file.getFilename());
