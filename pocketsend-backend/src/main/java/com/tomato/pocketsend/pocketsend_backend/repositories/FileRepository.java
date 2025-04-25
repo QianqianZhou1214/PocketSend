@@ -2,6 +2,7 @@ package com.tomato.pocketsend.pocketsend_backend.repositories;
 
 import com.tomato.pocketsend.pocketsend_backend.entity.File;
 import com.tomato.pocketsend.pocketsend_backend.entity.User;
+import com.tomato.pocketsend.pocketsend_backend.model.FileDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
