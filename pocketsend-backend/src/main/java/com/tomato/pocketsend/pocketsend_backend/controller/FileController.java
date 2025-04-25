@@ -3,6 +3,7 @@ package com.tomato.pocketsend.pocketsend_backend.controller;
 
 import com.tomato.pocketsend.pocketsend_backend.entity.File;
 import com.tomato.pocketsend.pocketsend_backend.entity.User;
+import com.tomato.pocketsend.pocketsend_backend.model.FileDTO;
 import com.tomato.pocketsend.pocketsend_backend.service.FileService;
 import com.tomato.pocketsend.pocketsend_backend.service.FileServiceImpl;
 import com.tomato.pocketsend.pocketsend_backend.service.WebSocketService;
@@ -38,16 +39,15 @@ public class FileController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping(FILE_PATH)
-    public ResponseEntity<File> uploadFile(
+    public ResponseEntity<FileDTO> uploadFile(
             @RequestPart(value = "file", required = false) MultipartFile file,
             @RequestPart(value = "text", required = false) String text,
             HttpSession session) {
 
-        Object userObj = session.getAttribute("user");
-        if (userObj == null) {
+        UUID userId = (UUID) session.getAttribute("userId");
+        if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        User user = (User) userObj;
 
         try {
             String filename = null;
@@ -65,24 +65,31 @@ public class FileController {
             } else {
                 return ResponseEntity.badRequest().body(null);
             }
+
             // save files to database
-            File savedFile = fileServiceImpl.saveFile(
-                    filename,
-                    filetype,
-                    content,
-                    user
-            );
-            String baseUrl = System.getenv("SERVER_URL");
-            if (baseUrl == null) {
-                baseUrl = "http://localhost:8080"; // default
+            FileDTO savedFile = fileService.saveFile(FileDTO.builder()
+                    .filename(filename)
+                    .filetype(filetype)
+                    .content(content)
+                    .userId(userId)
+                    .build());
+
+            // return download URL to frontend
+            String BASE_URL = System.getenv("SERVER_URL");
+            if (BASE_URL == null) {
+                BASE_URL = "http://localhost:8080"; // default
             }
 
-            String downloadUrl = baseUrl + "/api/files/" + savedFile.getId();
-            savedFile.setUrl(downloadUrl);
+            String DOWNLOAD_URL = BASE_URL + "/api/files/" + savedFile.getId();
+            savedFile.setUrl(DOWNLOAD_URL);
 
+            // WebSocket
             webSocketService.broadcastMessage("refresh");
 
-            return ResponseEntity.ok(savedFile);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Location", "/api/files/" + savedFile.getId());
+            return new ResponseEntity<>(savedFile, headers, HttpStatus.CREATED);
+
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -90,8 +97,8 @@ public class FileController {
     }
 
     @GetMapping(value = FILE_PATH_ID)
-    public ResponseEntity<byte[]> getFile(@PathVariable long id) {
-        return fileServiceImpl.getFileById(id)
+    public ResponseEntity<byte[]> getFile(@PathVariable UUID id) {
+        return fileService.getFileById(id)
                 .map(file -> ResponseEntity.ok()
                         .contentType(MediaType.valueOf(file.getFiletype()))
                         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
@@ -113,7 +120,7 @@ public class FileController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not allowed to delete this file.");
         }
 
-        fileServiceImpl.deleteFile(id);
+        fileService.deleteFile(id);
         return ResponseEntity.ok("File deleted successfully.");
     }
 
@@ -127,7 +134,7 @@ public class FileController {
 
         User user = (User) userObj;
 
-        List<File> files = fileServiceImpl.getFilesForUser(user);
+        List<File> files = fileService.getFilesForUser(user);
         List<Map<String, Object>> response = new ArrayList<>();
 
         for (File file : files) {
