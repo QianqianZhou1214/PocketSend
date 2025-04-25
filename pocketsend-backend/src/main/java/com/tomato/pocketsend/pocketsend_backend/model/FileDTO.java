@@ -26,4 +26,7 @@ public class FileDTO {
     @NotNull
     private String url;
 
+    @NotNull
+    private UUID userId;
+
 }
