@@ -11,6 +11,6 @@ import java.util.UUID;
 
 
 public interface FileRepository extends JpaRepository<File, UUID> {
-    List<FileDTO> findByOwner(UserDTO owner);
+    List<File> findAllByOwnerId(UUID id);
 
 }

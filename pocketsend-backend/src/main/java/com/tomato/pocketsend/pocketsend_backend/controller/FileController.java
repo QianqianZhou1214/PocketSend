@@ -37,6 +37,7 @@ public class FileController {
     @Autowired
     private WebSocketService webSocketService;
 
+
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping(FILE_PATH)
     public ResponseEntity<FileDTO> uploadFile(
@@ -107,56 +108,30 @@ public class FileController {
     }
 
     @DeleteMapping(value = FILE_PATH_ID)
-    public ResponseEntity<String> deleteFile(@PathVariable long id, HttpSession session) {
-        Object userObj = session.getAttribute("user");
-        if (userObj == null) {
+    public ResponseEntity<String> deleteFile(@PathVariable UUID id, HttpSession session) {
+        UUID userId = (UUID) session.getAttribute("userId");
+        if(userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        User user = (User) userObj;
 
-        Optional<File> fileOpt = fileServiceImpl.getFileById(id);
-        if (fileOpt.isEmpty() || fileOpt.get().getOwner().getId() != user.getId()) {
+        Optional<FileDTO> fileOpt = fileService.getFileById(id);
+        if (fileOpt.isEmpty() || fileOpt.get().getUserId() != userId) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not allowed to delete this file.");
         }
 
-        fileService.deleteFile(id);
+        fileService.deleteFileById(id);
         return ResponseEntity.ok("File deleted successfully.");
     }
 
     @GetMapping(value = FILE_PATH)
     public ResponseEntity<List<Map<String, Object>>> getAllFiles(HttpSession session) {
-        // get files only for current user
-        Object userObj = session.getAttribute("user");
-        if (userObj == null) {
+        UUID userId = (UUID) session.getAttribute("userId");
+        if(userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+        List<Map<String, Object>> files = fileService.getFilesForUser(userId);
+        return ResponseEntity.ok(files);
 
-        User user = (User) userObj;
-
-        List<File> files = fileService.getFilesForUser(user);
-        List<Map<String, Object>> response = new ArrayList<>();
-
-        for (File file : files) {
-            Map<String, Object> fileData = new HashMap<>();
-            fileData.put("id", file.getId());
-            fileData.put("filename", file.getFilename());
-            fileData.put("filetype", file.getFiletype());
-            fileData.put("uploadedAt", file.getUploadedAt());
-
-            // if text, convert byte[] to String
-            if ("text/plain".equals(file.getFiletype())) {
-                fileData.put("content", new String(file.getContent(), StandardCharsets.UTF_8));
-            } else {
-                // other file types, Base64
-                String base64Content = Base64.getEncoder().encodeToString(file.getContent());
-                fileData.put("content", base64Content);
-                fileData.put("url", "data:" + file.getFiletype() + ";base64," + base64Content);
-            }
-
-            response.add(fileData);
-        }
-
-        return ResponseEntity.ok(response);
     }
 }
