@@ -1,6 +1,7 @@
 package com.tomato.pocketsend.pocketsend_backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tomato.pocketsend.pocketsend_backend.entity.File;
 import com.tomato.pocketsend.pocketsend_backend.model.FileDTO;
 import com.tomato.pocketsend.pocketsend_backend.service.FileService;
 import com.tomato.pocketsend.pocketsend_backend.service.WebSocketService;
@@ -16,12 +17,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import java.nio.charset.StandardCharsets;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.nullable;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mockStatic;
@@ -97,6 +96,34 @@ class FileControllerTest {
                 .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"test.pdf\""))
                 .andExpect(content().contentType(MediaType.APPLICATION_PDF))
                 .andExpect(content().bytes("Hello, PocketSend!".getBytes()));
+
+    }
+
+    @Test
+    void testGetAllFiles() throws Exception {
+        UUID userId = UUID.randomUUID();
+
+        Map<String, Object> file1 = new HashMap<>();
+        file1.put("id", UUID.randomUUID());
+        file1.put("filename", "file1.pdf");
+
+        Map<String, Object> file2 = new HashMap<>();
+        file2.put("id", UUID.randomUUID());
+        file2.put("filename", "file2.docx");
+
+        List<Map<String, Object>> files = Arrays.asList(file1, file2);
+
+        given(fileService.getFilesForUser(eq(userId))).willReturn(files);
+
+        mockMvc.perform(get(FileController.FILE_PATH)
+                .sessionAttr("userId", userId)
+                .with(csrf())
+                .with(user("testuser").roles("USER"))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].filename").value("file1.pdf"))
+                .andExpect(jsonPath("$[1].filename").value("file2.docx"));
 
     }
 
