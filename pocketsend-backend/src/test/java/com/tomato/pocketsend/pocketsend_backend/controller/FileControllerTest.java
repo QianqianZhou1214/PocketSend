@@ -23,6 +23,7 @@ import java.util.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mockStatic;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -127,7 +128,29 @@ class FileControllerTest {
 
     }
 
+    @Test
+    void testDeleteFile() throws Exception {
 
+        UUID userId = UUID.randomUUID();
+        UUID fileId = UUID.randomUUID();
 
+        FileDTO fileDTO = FileDTO.builder()
+                .id(fileId)
+                .filename("test.pdf")
+                .userId(userId)
+                .build();
+
+        given(fileService.getFileById(eq(fileId))).willReturn(Optional.of(fileDTO));
+
+        mockMvc.perform(delete(FileController.FILE_PATH_ID, fileId)
+                        .sessionAttr("userId", userId)
+                        .with(csrf())
+                        .with(user("testuser").roles("USER"))
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().string("File deleted successfully."));
+
+        then(fileService).should().deleteFileById(fileId);
+    }
 
 }
