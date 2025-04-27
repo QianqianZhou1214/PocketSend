@@ -50,55 +50,20 @@ public class FileController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        try {
-            String filename = null;
-            String filetype = null;
-            byte[] content = null;
+        FileDTO savedFile = fileService.handleUpload(file, text, userId);
 
-            if (file != null && !file.isEmpty()) {
-                filename = file.getOriginalFilename();
-                filetype = file.getContentType();
-                content = file.getBytes();
-            } else if (text != null && !text.isEmpty()) {
-                filename = "text_message.txt";
-                filetype = "text/plain";
-                content = text.getBytes(StandardCharsets.UTF_8);
-            } else {
-                return ResponseEntity.badRequest().body(null);
-            }
+        // WebSocket
+        webSocketService.broadcastMessage("refresh");
 
-            // save files to database
-            FileDTO savedFile = fileService.saveFile(FileDTO.builder()
-                    .filename(filename)
-                    .filetype(filetype)
-                    .content(content)
-                    .userId(userId)
-                    .build());
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Location", "/api/files/" + savedFile.getId());
+        return new ResponseEntity<>(savedFile, headers, HttpStatus.CREATED);
 
-            // return download URL to frontend
-            String BASE_URL = System.getenv("SERVER_URL");
-            if (BASE_URL == null) {
-                BASE_URL = "http://localhost:8080"; // default
-            }
-
-            String DOWNLOAD_URL = BASE_URL + "/api/files/" + savedFile.getId();
-            savedFile.setUrl(DOWNLOAD_URL);
-
-            // WebSocket
-            webSocketService.broadcastMessage("refresh");
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Location", "/api/files/" + savedFile.getId());
-            return new ResponseEntity<>(savedFile, headers, HttpStatus.CREATED);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
     }
 
+
     @GetMapping(value = FILE_PATH_ID)
-    public ResponseEntity<byte[]> getFile(@PathVariable UUID id) {
+    public ResponseEntity<byte[]> getFileById(@PathVariable("fileId") UUID id) {
         return fileService.getFileById(id)
                 .map(file -> ResponseEntity.ok()
                         .contentType(MediaType.valueOf(file.getFiletype()))
@@ -106,6 +71,7 @@ public class FileController {
                         .body(file.getContent()))
                 .orElse(ResponseEntity.notFound().build());
     }
+
 
     @DeleteMapping(value = FILE_PATH_ID)
     public ResponseEntity<String> deleteFile(@PathVariable UUID id, HttpSession session) {

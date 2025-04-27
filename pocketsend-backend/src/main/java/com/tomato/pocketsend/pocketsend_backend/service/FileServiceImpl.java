@@ -3,11 +3,12 @@ package com.tomato.pocketsend.pocketsend_backend.service;
 import com.tomato.pocketsend.pocketsend_backend.entity.File;
 import com.tomato.pocketsend.pocketsend_backend.mappers.FileMapper;
 import com.tomato.pocketsend.pocketsend_backend.model.FileDTO;
-import com.tomato.pocketsend.pocketsend_backend.model.UserDTO;
 import com.tomato.pocketsend.pocketsend_backend.repositories.FileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,6 +26,45 @@ public class FileServiceImpl implements FileService{
         return fileMapper.fileToFileDto(fileRepository
                 .save(fileMapper.fileDtoToFile(file)));
     }
+    @Override
+    public FileDTO handleUpload(MultipartFile file, String text, UUID userId) {
+        try {
+            String filename;
+            String filetype;
+            byte[] content;
+
+            if(file != null && !file.isEmpty()) {
+                filename = file.getOriginalFilename();
+                filetype = file.getContentType();
+                content = file.getBytes();
+            } else if(text != null && !text.isEmpty()) {
+                filename = "text_message.txt";
+                filetype = "text/plain";
+                content = text.getBytes(StandardCharsets.UTF_8);
+            } else {
+                throw new IllegalArgumentException("No file or text provided");
+            }
+
+            FileDTO savedFile = saveFile(FileDTO.builder()
+                    .filename(filename)
+                    .filetype(filetype)
+                    .content(content)
+                    .userId(userId)
+                    .build());
+
+            String BASE_URL = System.getenv("SERVER_URL");
+            if (BASE_URL == null) {
+                BASE_URL = "http://localhost:8080"; // default fallback
+            }
+            String DOWNLOAD_URL = BASE_URL + "/api/files/" + savedFile.getId();
+            savedFile.setUrl(DOWNLOAD_URL);
+
+            return savedFile;
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to handle file upload", e);
+        }
+    }
+
 
     @Override
     public List<FileDTO> getAllFiles() {

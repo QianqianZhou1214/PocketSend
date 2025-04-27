@@ -40,7 +40,7 @@ public class File {
     private String url;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "id", nullable = false)
     private User owner;
 
 
