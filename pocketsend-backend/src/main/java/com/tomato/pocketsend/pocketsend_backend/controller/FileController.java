@@ -7,6 +7,7 @@ import com.tomato.pocketsend.pocketsend_backend.model.FileDTO;
 import com.tomato.pocketsend.pocketsend_backend.service.FileService;
 import com.tomato.pocketsend.pocketsend_backend.service.FileServiceImpl;
 import com.tomato.pocketsend.pocketsend_backend.service.WebSocketService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,9 +44,9 @@ public class FileController {
     public ResponseEntity<FileDTO> uploadFile(
             @RequestPart(value = "file", required = false) MultipartFile file,
             @RequestPart(value = "text", required = false) String text,
-            HttpSession session) {
+            HttpServletRequest request) {
 
-        UUID userId = (UUID) session.getAttribute("userId");
+        UUID userId = (UUID) request.getAttribute("userId");
         if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -74,8 +75,8 @@ public class FileController {
 
 
     @DeleteMapping(value = FILE_PATH_ID)
-    public ResponseEntity<String> deleteFile(@PathVariable UUID id, HttpSession session) {
-        UUID userId = (UUID) session.getAttribute("userId");
+    public ResponseEntity<String> deleteFile(@PathVariable("fileId") UUID id, HttpServletRequest request) {
+        UUID userId = (UUID) request.getAttribute("userId");
         if(userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -91,8 +92,8 @@ public class FileController {
     }
 
     @GetMapping(value = FILE_PATH)
-    public ResponseEntity<List<Map<String, Object>>> getAllFiles(HttpSession session) {
-        UUID userId = (UUID) session.getAttribute("userId");
+    public ResponseEntity<List<Map<String, Object>>> getAllFiles(HttpServletRequest request) {
+        UUID userId = (UUID) request.getAttribute("userId");
         if(userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }

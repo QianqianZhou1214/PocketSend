@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -30,6 +31,10 @@ public class User {
 
     @Column(nullable = false)
     private String password;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 
 
 }

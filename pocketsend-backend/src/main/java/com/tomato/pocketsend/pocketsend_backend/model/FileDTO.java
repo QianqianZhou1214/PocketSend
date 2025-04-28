@@ -21,7 +21,7 @@ public class FileDTO {
     @NotNull
     private byte[] content;
 
-    private LocalDateTime uploadedAt = LocalDateTime.now();
+    private LocalDateTime uploadedAt;
 
     @NotNull
     private String url;
