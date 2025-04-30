@@ -1,40 +1,48 @@
 package com.tomato.pocketsend.pocketsend_backend.controller;
 
-import com.tomato.pocketsend.pocketsend_backend.entity.User;
-import com.tomato.pocketsend.pocketsend_backend.service.AuthService;
+import com.tomato.pocketsend.pocketsend_backend.model.UserDTO;
+import com.tomato.pocketsend.pocketsend_backend.utils.JwtTokenUtil;
 import com.tomato.pocketsend.pocketsend_backend.service.UserService;
-import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+import java.util.UUID;
+
 @RestController
-@RequestMapping("/api/auth")
-public class AuthController {
-    @Autowired
+@RequiredArgsConstructor
+@RequestMapping("/api/users")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+public class UserController {
+
     private UserService userService;
-    @Autowired
-    private AuthService authService;
+
 
     @PostMapping("/register")
-    @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
-    public User register(@RequestParam String username,
-                         @RequestParam String email,
-                         @RequestParam String password) throws Exception {
-        return userService.registerUser(username, email, password);
+    public ResponseEntity<UserDTO> register(@RequestBody Map<String, String> payload) {
+        UserDTO user = userService.register(payload.get("username"), payload.get("email"), payload.get("password"));
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam String identifier,
-                        @RequestParam String password,
-                        HttpSession session) throws Exception {
-        User user = authService.authenticate(identifier, password);
-        session.setAttribute("userId", user.getId());
-        return "Login Successful";
+    public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> payload) {
+        String token = userService.login(payload.get("identifier"), payload.get("password"));
+        return ResponseEntity.ok(Map.of("token", token));
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<UserDTO> updateUser(@RequestHeader("Authorization") String authHeader,
+                                              @RequestBody Map<String, String> payload) {
+        String token = authHeader.replace("Bearer ", "");
+        UUID userId = new JwtTokenUtil().extractUserId(token);
+        UserDTO updated = userService.updateUser(userId, payload.get("username"), payload.get("email"), payload.get("password"));
+        return ResponseEntity.ok(updated);
     }
 
     @PostMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "Logged Out";
+    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String authHeader) {
+        return ResponseEntity.ok().build();
     }
 }
