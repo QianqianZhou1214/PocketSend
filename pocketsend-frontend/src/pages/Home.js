@@ -73,6 +73,7 @@ export default function Home() {
           "Authorization": `Bearer ${token}`
         },
         body: formData,
+        credentials: "include",
       });
       console.log("Response status:", response.status);
 

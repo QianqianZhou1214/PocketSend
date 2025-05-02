@@ -47,6 +47,7 @@ public class FileController {
             HttpServletRequest request) {
 
         Long userId = (Long) request.getAttribute("userId");
+        System.out.println("upload controller: userId = " + userId);
         if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }

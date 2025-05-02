@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -13,6 +14,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.UUID;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtTokenFilter extends OncePerRequestFilter {
@@ -29,7 +31,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         System.out.println("=== JwtTokenFilter Called ===");
         System.out.println("Request URI: " + request.getRequestURI());
 
-        if (request.getRequestURI().startsWith("/ws")) {
+        String uri = request.getRequestURI();
+        log.info("JwtTokenFilter Called: URI = {}", uri);
+        if (uri.startsWith("/api/auth") || uri.startsWith("/ws")) {
             filterChain.doFilter(request, response);
             return;
         }
