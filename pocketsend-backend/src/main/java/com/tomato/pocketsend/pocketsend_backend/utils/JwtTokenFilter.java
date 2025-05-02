@@ -93,6 +93,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         } else {
             log.warn("No valid Bearer token.");
         }
+        log.info("Final request userId = {}", request.getAttribute("userId"));
 
         filterChain.doFilter(request, response);
     }
