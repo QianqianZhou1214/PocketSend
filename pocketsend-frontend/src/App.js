@@ -10,6 +10,7 @@ import Register from './pages/Register';
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
+
   return isAuthenticated ? children : <Navigate to="/login" />;
 }
 

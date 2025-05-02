@@ -48,6 +48,8 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(false);
   };*/
 
+  const [isLoadingUser, setIsLoadingUser] = useState(true);
+
   const fetchCurrentUser = async () => {
     try {
       const res = await fetch("http://localhost:8080/api/auth/profile", {
@@ -61,19 +63,28 @@ export const AuthProvider = ({ children }) => {
       if(res.ok) {
         const data = await res.json();
        setUser(data);
+       setIsAuthenticated(true);
       } else {
+        setIsAuthenticated(false);
         console.error("Failed to fetch user info.");
       }
     } catch (err) {
+      setIsAuthenticated(false);
       console.error("Error fetching info", err);
+    } finally {
+      setIsLoadingUser(false); // done loading
     }
   };
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
-  if (token) {
-    fetchCurrentUser().then(() => setIsAuthenticated(true));
-  }
+    if (token) {
+      setIsAuthenticated(true);
+      fetchCurrentUser();
+    } else {
+      setIsAuthenticated(false);
+      setIsLoadingUser(false); // still need to stop loading
+    }
   }, []);
 
   const updateUser = async (updatedData) => {
@@ -100,7 +111,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout, user, updateUser }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, logout, user, updateUser, isLoadingUser }}>
       {children}
     </AuthContext.Provider>
   );

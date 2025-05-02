@@ -5,7 +5,7 @@ import "./styles/Account.css"
 
 
 export default function Account() {
-  const { user, logout, updateUser } = useAuth();
+  const { user, logout, updateUser, isLoadingUser } = useAuth();
   const navigate = useNavigate();
 
   const [username, setUsername] = useState("");
@@ -31,8 +31,12 @@ export default function Account() {
     navigate("/login");
   };
 
-  if (!user) {
+  if (isLoadingUser) {
     return <div>Loading user info...</div>;
+  }
+  
+  if (!user) {
+    return <div>User not found or not logged in.</div>;
   }
 
   return (
