@@ -70,9 +70,9 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
-    if (token) {
-      fetchCurrentUser();
-    }
+  if (token) {
+    fetchCurrentUser().then(() => setIsAuthenticated(true));
+  }
   }, []);
 
   const updateUser = async (updatedData) => {
@@ -80,7 +80,7 @@ export const AuthProvider = ({ children }) => {
       const response = await fetch("http://localhost:8080/api/auth/profile", {
         method: "PUT",
         headers: {
-          "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
+          "Authorization": `Bearer ${localStorage.getItem("accessToken")}`, 
         },
         credentials: "include",
         body: JSON.stringify(updatedData),
