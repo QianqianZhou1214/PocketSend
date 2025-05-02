@@ -50,10 +50,11 @@ export const AuthProvider = ({ children }) => {
   const fetchCurrentUser = async () => {
     try {
       const res = await fetch("http://localhost:8080/api/auth/profile", {
-        credentials: "include",
+        method: "GET",
         headers: {
           "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
-        }
+        },
+        credentials: "include",
       });
 
       if(res.ok) {
@@ -79,7 +80,6 @@ export const AuthProvider = ({ children }) => {
       const response = await fetch("http://localhost:8080/api/auth/profile", {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json",
           "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
         },
         credentials: "include",
