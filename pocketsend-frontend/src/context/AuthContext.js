@@ -4,25 +4,28 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(
-    localStorage.getItem("isLoggedIn") === "true"
+    !!localStorage.getItem("accessToken")
   );
+
 
   const login = async (identifier, password) => {
     try {
       const response = await fetch("http://localhost:8080/api/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ identifier, password }),
-        credentials: "include"
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ identifier, password }),
+        credentials: "include",
       });
 
       if (response.ok) {
-        localStorage.setItem("isLoggedIn", "true");
+        const data = await response.json();
+        localStorage.setItem("accessToken", data.token);
+        //localStorage.setItem("isLoggedIn", "true");
         setIsAuthenticated(true);
         return { success: true };
       } else {
-        const data = await response.json();
-        return { success: false, message: data.message };
+        const error = await response.text();
+        return { success: false, message: error };
       }
     } catch (error) {
       return { success: false, message: error.message };
@@ -34,7 +37,7 @@ export const AuthProvider = ({ children }) => {
       method: "POST",
       credentials: "include"
     });
-    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("accessToken");
     setIsAuthenticated(false);
   };
 

@@ -1,44 +1,72 @@
-package com.tomato.pocketsend.pocketsend_backend.service;
+package com.tomato.pocketsend.pocketsend_backend.utils;
 
 import com.tomato.pocketsend.pocketsend_backend.entity.User;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.UUID;
 
-@Service
-public class JwtService {
+@Component
+public class JwtTokenUtil {
 
-    @Value("${jwt.secret}")
-    private String secret;
+    private SecretKey secretKey;
 
-    @Value("${jwt.expiration-ms}")
-    private long expirationMs;
+    private final long expiration = 3600_000;
+
+    private final String secret = "my-very-secure-secret-key-123456!";
+
+    @PostConstruct
+    public void init() {
+        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    }
 
     public String generateToken(User user) {
         return Jwts.builder()
-                .setSubject(user.getId().toString())
+                .setSubject(user.getUsername())
+                .claim("userId", user.getId())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
-                .signWith(SignatureAlgorithm.HS256, secret)
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public UUID getUserIdFromToken(String token) {
-        return UUID.fromString(Jwts.parser().setSigningKey(secret)
-                .parseClaimsJws(token).getBody().getSubject());
+    public String extractUsername(String token) {
+        return parseClaims(token).getSubject();
     }
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+            parseClaims(token);
             return true;
-        } catch (Exception e) {
+        } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
+    }
+
+    private Claims parseClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    public Long getUserIdFromToken(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return ((Number) claims.get("userId")).longValue();
     }
 }

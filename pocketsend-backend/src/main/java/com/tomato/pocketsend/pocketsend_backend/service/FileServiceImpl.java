@@ -22,12 +22,16 @@ public class FileServiceImpl implements FileService{
 
     @Override
     public FileDTO saveFile(FileDTO file) {
+        File entity = fileMapper.fileDtoToFile(file);
+
+        System.out.println("Mapped entity: " + entity);
+        System.out.println("Owner: " + entity.getOwner());
 
         return fileMapper.fileToFileDto(fileRepository
                 .save(fileMapper.fileDtoToFile(file)));
     }
     @Override
-    public FileDTO handleUpload(MultipartFile file, String text, UUID userId) {
+    public FileDTO handleUpload(MultipartFile file, String text, Long userId) {
         try {
             String filename;
             String filetype;
@@ -59,10 +63,15 @@ public class FileServiceImpl implements FileService{
             String DOWNLOAD_URL = BASE_URL + "/api/files/" + savedFile.getId();
             savedFile.setUrl(DOWNLOAD_URL);
 
+            System.out.println("Upload by userId: " + userId);
+            System.out.println("FileDTO: " + file);
+
+
             return savedFile;
         } catch (IOException e) {
             throw new RuntimeException("Failed to handle file upload", e);
         }
+
     }
 
 
@@ -74,12 +83,13 @@ public class FileServiceImpl implements FileService{
     }
 
     @Override
-    public List<Map<String, Object>> getFilesForUser(UUID userId) {
+    public List<Map<String, Object>> getFilesForUser(Long userId) {
 
         List<File> files = fileRepository.findAllByOwnerId(userId);
         List<Map<String, Object>> response = new ArrayList<>();
-        Map<String, Object> fileData = new HashMap<>();
+
         for (File file : files) {
+            Map<String, Object> fileData = new HashMap<>();
             fileData.put("id", file.getId());
             fileData.put("filename", file.getFilename());
             fileData.put("filetype", file.getFiletype());
@@ -102,13 +112,13 @@ public class FileServiceImpl implements FileService{
     }
 
     @Override
-    public Optional<FileDTO> getFileById(UUID id) {
+    public Optional<FileDTO> getFileById(Long id) {
         return Optional.ofNullable(fileMapper.fileToFileDto(fileRepository.findById(id)
                 .orElse(null)));
     }
 
     @Override
-    public Boolean deleteFileById(UUID id) {
+    public Boolean deleteFileById(Long id) {
         if(fileRepository.existsById(id)) {
             fileRepository.deleteById(id);
             return true;

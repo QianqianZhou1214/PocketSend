@@ -7,8 +7,8 @@ const SessionManager = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem("isLoggedIn");
-    if (!isLoggedIn) {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
       navigate("/login");
       return;
     }

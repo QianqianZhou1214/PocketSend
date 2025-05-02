@@ -18,7 +18,8 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(webSocketService, "/ws").setAllowedOrigins("*");
+        registry.addHandler(webSocketService, "/ws")
+                .setAllowedOrigins("*");
 
     }
 }

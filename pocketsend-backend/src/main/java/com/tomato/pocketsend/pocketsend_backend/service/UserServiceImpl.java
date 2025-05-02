@@ -1,12 +1,17 @@
 package com.tomato.pocketsend.pocketsend_backend.service;
 
+import com.tomato.pocketsend.pocketsend_backend.entity.User;
 import com.tomato.pocketsend.pocketsend_backend.mappers.UserMapper;
+import com.tomato.pocketsend.pocketsend_backend.model.RegisterRequest;
+import com.tomato.pocketsend.pocketsend_backend.model.UpdateUserRequest;
 import com.tomato.pocketsend.pocketsend_backend.model.UserDTO;
 import com.tomato.pocketsend.pocketsend_backend.repositories.UserRepository;
+import com.tomato.pocketsend.pocketsend_backend.utils.PasswordUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -17,37 +22,62 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
-    @Override
-    public Optional<UserDTO> getUserById(UUID id) {
-        return Optional.empty();
-    }
 
     @Override
-    public List<UserDTO> getAllUsers() {
-        return List.of();
-    }
-
-    @Override
-    public UserDTO saveNewUser(UserDTO user) throws Exception {
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            throw new Exception("Username already exists");
-        }
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new Exception("Email already registered");
+    public UserDTO registerUser(RegisterRequest request) {
+        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
+            throw new IllegalArgumentException("Username is already taken");
         }
 
-        return userMapper.userToUserDto(userRepository
-                .save(userMapper.userDtoToUser(user)));
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("Email is already registered");
+        }
+
+        User newUser = User.builder()
+                .username(request.getUsername())
+                .email(request.getEmail())
+                .password(PasswordUtil.hashPassword(request.getPassword()))
+                .build();
+
+        userRepository.save(newUser);
+        return userMapper.userToUserDto(newUser);
+    }
+
+
+    @Override
+    public Optional<User> findByUsernameOrEmail(String identifier) {
+        return userRepository.findByUsername(identifier)
+                .or(() -> userRepository.findByEmail(identifier));
     }
 
     @Override
-    public Optional<UserDTO> updateUserById(UUID id) {
-        return Optional.empty();
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("User not found"));
     }
 
     @Override
-    public Boolean deleteUserById(UUID id) {
-        return null;
+    public UserDTO getUserDtoById(Long id) {
+        return userMapper.userToUserDto(getUserById(id));
+    }
+
+    @Override
+    public UserDTO updateUser(Long id, UpdateUserRequest request) {
+        User user = getUserById(id);
+        if (request.getUsername() != null) user.setUsername(request.getUsername());
+        if (request.getEmail() != null) user.setEmail(request.getEmail());
+        if (request.getPassword() != null) user.setPassword(encodePassword(request.getPassword()));
+        return userMapper.userToUserDto(userRepository.save(user));
+    }
+
+    @Override
+    public boolean checkPassword(User user, String rawPassword) {
+        return PasswordUtil.matches(rawPassword, user.getPassword());
+    }
+
+    @Override
+    public String encodePassword(String rawPassword) {
+        return PasswordUtil.hashPassword(rawPassword);
     }
 
 }

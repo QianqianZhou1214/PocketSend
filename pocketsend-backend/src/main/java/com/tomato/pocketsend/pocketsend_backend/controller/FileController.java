@@ -26,12 +26,13 @@ import java.util.*;
 
 @Slf4j
 @RestController
-@CrossOrigin("*")
 @RequiredArgsConstructor
 public class FileController {
 
     public static final String FILE_PATH = "/api/files";
     public static final String FILE_PATH_ID = FILE_PATH + "/{fileId}";
+
+    public static final String FILE_UPLOAD = FILE_PATH + "/upload";
 
     private final FileService fileService;
 
@@ -39,14 +40,13 @@ public class FileController {
     private WebSocketService webSocketService;
 
 
-    @CrossOrigin(origins = "http://localhost:3000")
-    @PostMapping(FILE_PATH)
+    @PostMapping(FILE_UPLOAD)
     public ResponseEntity<FileDTO> uploadFile(
             @RequestPart(value = "file", required = false) MultipartFile file,
             @RequestPart(value = "text", required = false) String text,
             HttpServletRequest request) {
 
-        UUID userId = (UUID) request.getAttribute("userId");
+        Long userId = (Long) request.getAttribute("userId");
         if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -64,7 +64,7 @@ public class FileController {
 
 
     @GetMapping(value = FILE_PATH_ID)
-    public ResponseEntity<byte[]> getFileById(@PathVariable("fileId") UUID id) {
+    public ResponseEntity<byte[]> getFileById(@PathVariable("fileId") Long id) {
         return fileService.getFileById(id)
                 .map(file -> ResponseEntity.ok()
                         .contentType(MediaType.valueOf(file.getFiletype()))
@@ -75,15 +75,15 @@ public class FileController {
 
 
     @DeleteMapping(value = FILE_PATH_ID)
-    public ResponseEntity<String> deleteFile(@PathVariable("fileId") UUID id, HttpServletRequest request) {
-        UUID userId = (UUID) request.getAttribute("userId");
+    public ResponseEntity<String> deleteFile(@PathVariable("fileId") Long id, HttpServletRequest request) {
+        Long userId = (Long) request.getAttribute("userId");
         if(userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
 
         Optional<FileDTO> fileOpt = fileService.getFileById(id);
-        if (fileOpt.isEmpty() || fileOpt.get().getUserId() != userId) {
+        if (fileOpt.isEmpty() || !fileOpt.get().getUserId().equals(userId)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not allowed to delete this file.");
         }
 
@@ -93,7 +93,7 @@ public class FileController {
 
     @GetMapping(value = FILE_PATH)
     public ResponseEntity<List<Map<String, Object>>> getAllFiles(HttpServletRequest request) {
-        UUID userId = (UUID) request.getAttribute("userId");
+        Long userId = (Long) request.getAttribute("userId");
         if(userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }

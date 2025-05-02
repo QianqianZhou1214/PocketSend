@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 
-public interface FileRepository extends JpaRepository<File, UUID> {
-    List<File> findAllByOwnerId(UUID id);
+public interface FileRepository extends JpaRepository<File, Long> {
+    List<File> findAllByOwnerId(Long id);
 
 }

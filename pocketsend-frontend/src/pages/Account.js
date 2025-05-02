@@ -4,6 +4,7 @@ import "./styles/Account.css"
 
 
 export default function Account({ user, onLogout,  onUpdateUser}) {
+  
   const navigate = useNavigate();
 
   const [username, setUsername] = useState(user.username);

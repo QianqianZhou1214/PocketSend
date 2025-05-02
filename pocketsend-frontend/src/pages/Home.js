@@ -12,8 +12,14 @@ export default function Home() {
   const wsRef = useRef(null);
 
   const fetchFiles = async () => {
+    const token = localStorage.getItem("accessToken");
     try {
-      const response = await fetch("http://localhost:8080/api/files");
+      const response = await fetch("http://localhost:8080/api/files", {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        },
+        credentials: "include",
+      });
       if (response.ok) {
         const data = await response.json();
         setFiles(data);
@@ -58,9 +64,14 @@ export default function Home() {
       formData.append("file", data.file);
     }
 
+    const token = localStorage.getItem("accessToken"); // get Jwt token out
+
     try {
       const response = await fetch("http://localhost:8080/api/files/upload", {
         method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        },
         body: formData,
       });
       console.log("Response status:", response.status);
@@ -77,8 +88,13 @@ export default function Home() {
 
   const handleDelete = async (fileId) => {
     try {
+      const token = localStorage.getItem("accessToken");
       const response = await fetch(`http://localhost:8080/api/files/${fileId}`, {
         method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        },
+        credentials: "include",
       });
       if (response.ok) {
         setFiles(prevFiles => prevFiles.filter(file => file.id !== fileId));

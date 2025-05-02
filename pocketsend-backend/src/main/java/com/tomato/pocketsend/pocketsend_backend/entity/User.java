@@ -18,10 +18,8 @@ import java.util.UUID;
 public class User {
 
     @Id
-    @GeneratedValue
-    @UuidGenerator
-    @Column(length = 36, columnDefinition = "varchar", updatable = false, nullable = false)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(unique = true, nullable = false)
     private String username;

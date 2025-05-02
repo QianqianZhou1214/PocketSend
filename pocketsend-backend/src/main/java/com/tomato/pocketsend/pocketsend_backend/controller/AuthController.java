@@ -1,48 +1,66 @@
 package com.tomato.pocketsend.pocketsend_backend.controller;
 
-import com.tomato.pocketsend.pocketsend_backend.model.UserDTO;
+import com.tomato.pocketsend.pocketsend_backend.entity.User;
+import com.tomato.pocketsend.pocketsend_backend.model.*;
 import com.tomato.pocketsend.pocketsend_backend.utils.JwtTokenUtil;
 import com.tomato.pocketsend.pocketsend_backend.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/users")
+@RequestMapping("/api/auth")
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
-public class UserController {
+public class AuthController {
 
-    private UserService userService;
-
+    private final UserService userService;
+    private final JwtTokenUtil jwtTokenUtil;
 
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> register(@RequestBody Map<String, String> payload) {
-        UserDTO user = userService.register(payload.get("username"), payload.get("email"), payload.get("password"));
-        return ResponseEntity.status(HttpStatus.CREATED).body(user);
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+        try {
+            UserDTO userDTO = userService.registerUser(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> payload) {
-        String token = userService.login(payload.get("identifier"), payload.get("password"));
-        return ResponseEntity.ok(Map.of("token", token));
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        Optional<User> optionalUser = userService.findByUsernameOrEmail(request.getIdentifier());
+
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+        }
+
+        User user = optionalUser.get();
+        if (!userService.checkPassword(user, request.getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+        }
+
+        String token = jwtTokenUtil.generateToken(user);
+        UserDTO userDTO = userService.getUserDtoById(user.getId());
+        return ResponseEntity.ok(new LoginResponse(token, userDTO));
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<UserDTO> updateUser(@RequestHeader("Authorization") String authHeader,
-                                              @RequestBody Map<String, String> payload) {
-        String token = authHeader.replace("Bearer ", "");
-        UUID userId = new JwtTokenUtil().extractUserId(token);
-        UserDTO updated = userService.updateUser(userId, payload.get("username"), payload.get("email"), payload.get("password"));
-        return ResponseEntity.ok(updated);
+    @GetMapping("/me")
+    public ResponseEntity<UserDTO> getCurrentUser(HttpServletRequest request) {
+        Long userId = (Long) request.getAttribute("userId");
+        return ResponseEntity.ok(userService.getUserDtoById(userId));
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String authHeader) {
-        return ResponseEntity.ok().build();
+    @PutMapping("/me")
+    public ResponseEntity<UserDTO> updateUser(@RequestBody UpdateUserRequest request,
+                                              HttpServletRequest httpRequest) {
+        Long userId = (Long) httpRequest.getAttribute("userId");
+        return ResponseEntity.ok(userService.updateUser(userId, request));
     }
 }

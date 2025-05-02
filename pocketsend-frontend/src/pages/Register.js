@@ -18,12 +18,12 @@ export default function Register() {
     e.preventDefault();
     const response = await fetch("http://localhost:8080/api/auth/register", {
       method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams(form),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
       credentials: "include",
     });
 
-    if (response.ok) {
+    if (response.status === 201) {
       alert("Registration successful!");
       navigate("/login");
     } else {

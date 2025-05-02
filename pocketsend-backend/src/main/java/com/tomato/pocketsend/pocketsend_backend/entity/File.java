@@ -18,10 +18,8 @@ import java.util.UUID;
 public class File {
 
     @Id
-    @GeneratedValue
-    @UuidGenerator
-    @Column(length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false)
     private String filename;
@@ -40,7 +38,7 @@ public class File {
     private String url;
 
     @ManyToOne
-    @JoinColumn(name = "id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User owner;
 
 

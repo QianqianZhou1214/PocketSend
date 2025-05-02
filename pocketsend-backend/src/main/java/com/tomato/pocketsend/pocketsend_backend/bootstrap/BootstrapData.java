@@ -24,8 +24,9 @@ public class BootstrapData implements CommandLineRunner {
     @Transactional
     @Override
     public void run(String... args) throws Exception {
-        loadFileData();
         loadUserData();
+        loadFileData();
+
     }
 
     private void loadUserData() {

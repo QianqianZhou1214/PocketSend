@@ -12,12 +12,12 @@ import java.util.UUID;
 public interface FileService {
     FileDTO saveFile(FileDTO file);
 
-    FileDTO handleUpload(MultipartFile file, String text, UUID userId);
+    FileDTO handleUpload(MultipartFile file, String text, Long userId);
 
     List<FileDTO> getAllFiles();
-    List<Map<String, Object>> getFilesForUser(UUID userId);
-    Optional<FileDTO> getFileById(UUID id);
-    Boolean deleteFileById(UUID id);
+    List<Map<String, Object>> getFilesForUser(Long userId);
+    Optional<FileDTO> getFileById(Long id);
+    Boolean deleteFileById(Long id);
 
 
 }
