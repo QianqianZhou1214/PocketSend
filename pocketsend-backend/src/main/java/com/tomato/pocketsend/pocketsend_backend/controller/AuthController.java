@@ -51,13 +51,13 @@ public class AuthController {
         return ResponseEntity.ok(new LoginResponse(token, userDTO));
     }
 
-    @GetMapping("/me")
+    @GetMapping("/profile")
     public ResponseEntity<UserDTO> getCurrentUser(HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");
         return ResponseEntity.ok(userService.getUserDtoById(userId));
     }
 
-    @PutMapping("/me")
+    @PutMapping("/profile")
     public ResponseEntity<UserDTO> updateUser(@RequestBody UpdateUserRequest request,
                                               HttpServletRequest httpRequest) {
         Long userId = (Long) httpRequest.getAttribute("userId");
