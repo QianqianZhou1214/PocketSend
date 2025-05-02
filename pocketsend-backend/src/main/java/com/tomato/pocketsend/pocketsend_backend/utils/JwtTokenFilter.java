@@ -23,7 +23,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private UserRepository userRepository;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+
+        System.out.println("=== JwtTokenFilter Called ===");
+        System.out.println("Request URI: " + request.getRequestURI());
 
         if (request.getRequestURI().startsWith("/ws")) {
             filterChain.doFilter(request, response);
@@ -31,17 +35,21 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         }
 
         String header = request.getHeader("Authorization");
+        System.out.println("Authorization header: " + header);
+
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
             if (jwtTokenUtil.validateToken(token)) {
                 Long userId = jwtTokenUtil.getUserIdFromToken(token);
+                System.out.println("JWT validated, userId = " + userId);
                 request.setAttribute("userId", userId);
+            } else {
+                System.out.println("JWT validation failed.");
             }
+        } else {
+            System.out.println("No valid Bearer token.");
         }
 
         filterChain.doFilter(request, response);
-        System.out.println("Authorization header: " + header);
-
-
     }
 }
