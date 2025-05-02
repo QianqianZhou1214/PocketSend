@@ -66,7 +66,9 @@ public class UserServiceImpl implements UserService{
         User user = getUserById(id);
         if (request.getUsername() != null) user.setUsername(request.getUsername());
         if (request.getEmail() != null) user.setEmail(request.getEmail());
-        if (request.getPassword() != null) user.setPassword(encodePassword(request.getPassword()));
+        if (request.getPassword() != null && !request.getPassword().isBlank()) {
+            user.setPassword(encodePassword(request.getPassword()));
+        }
         return userMapper.userToUserDto(userRepository.save(user));
     }
 

@@ -7,6 +7,7 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(
     !!localStorage.getItem("accessToken")
   );
+  
 
 
   const login = async (identifier, password) => {
@@ -81,6 +82,7 @@ export const AuthProvider = ({ children }) => {
         method: "PUT",
         headers: {
           "Authorization": `Bearer ${localStorage.getItem("accessToken")}`, 
+          "Content-Type": "application/json",
         },
         credentials: "include",
         body: JSON.stringify(updatedData),
