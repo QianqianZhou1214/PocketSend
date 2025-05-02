@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -54,6 +55,7 @@ public class FileServiceImpl implements FileService{
                     .filetype(filetype)
                     .content(content)
                     .userId(userId)
+                    .uploadedAt(LocalDateTime.now())
                     .build());
 
             String BASE_URL = System.getenv("SERVER_URL");
