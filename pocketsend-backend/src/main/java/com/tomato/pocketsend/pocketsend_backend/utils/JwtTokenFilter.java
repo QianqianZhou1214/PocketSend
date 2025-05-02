@@ -63,8 +63,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         String uri = request.getRequestURI();
         log.info("JwtTokenFilter Called: URI = {}", uri);
 
-        // no need path
-        if (uri.startsWith("/api/auth") || uri.startsWith("/ws")) {
+        // no need path for /register and /login, websocket
+        if (uri.equals("/api/auth/login") || uri.equals("/api/auth/register") || uri.startsWith("/ws")) {
             filterChain.doFilter(request, response);
             return;
         }
