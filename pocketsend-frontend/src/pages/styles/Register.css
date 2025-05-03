@@ -42,3 +42,12 @@
   background: gray;
   cursor: not-allowed;
 }
+
+.login-request a {
+  color: #b3b5b0;
+  text-decoration: underline;
+}
+
+.login-request a:hover {
+  color: #ffff;
+}
