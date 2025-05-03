@@ -39,6 +39,10 @@ export default function Register() {
       <input name="email" value={form.email} onChange={handleChange} placeholder="Email" required />
       <input name="password" value={form.password} onChange={handleChange} placeholder="Password" required />
       <button>Register</button>
+      <p className="login-request">
+         Already have an account? <a href="/login">Login here</a>
+      </p>
     </form>
+    
   );
 }
