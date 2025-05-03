@@ -9,7 +9,11 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import Register from './pages/Register';
 
 function ProtectedRoute({ children }) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoadingUser } = useAuth();
+
+  if(isLoadingUser) {
+    return <div>Loading...</div>;
+  }
 
   return isAuthenticated ? children : <Navigate to="/login" />;
 }

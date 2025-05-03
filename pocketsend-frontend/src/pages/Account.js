@@ -19,7 +19,7 @@ export default function Account() {
       setEmail(user.email || "");
       setPassword("");
     }
-  }, [user]);
+  }, [user, isLoadingUser]);
 
   const handleSave = () => {
     updateUser({ username, email, password });
