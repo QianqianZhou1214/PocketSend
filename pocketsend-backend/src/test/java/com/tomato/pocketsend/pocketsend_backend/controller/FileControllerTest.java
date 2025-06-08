@@ -1,7 +1,6 @@
 package com.tomato.pocketsend.pocketsend_backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tomato.pocketsend.pocketsend_backend.entity.File;
 import com.tomato.pocketsend.pocketsend_backend.model.FileDTO;
 import com.tomato.pocketsend.pocketsend_backend.service.FileService;
 import com.tomato.pocketsend.pocketsend_backend.service.WebSocketService;
@@ -10,7 +9,6 @@ import com.tomato.pocketsend.pocketsend_backend.utils.JwtTokenUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -19,7 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.multipart.MultipartFile;
 
 
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 

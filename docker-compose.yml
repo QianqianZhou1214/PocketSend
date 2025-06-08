@@ -1,0 +1,38 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: pocketsend-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: pocketsend_library
+      MYSQL_USER: pocket
+      MYSQL_PASSWORD: send
+    expose:
+      - "3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  backend:
+    build:
+      context: ./pocketsend-backend
+    container_name: pocketsend-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/pocketsend_library
+      SPRING_DATASOURCE_USERNAME: pocket
+      SPRING_DATASOURCE_PASSWORD: send
+
+  frontend:
+    build:
+      context: ./pocketsend-frontend
+    container_name: pocketsend-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  db_data:
