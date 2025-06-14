@@ -89,6 +89,7 @@ public class FileController {
         }
 
         fileService.deleteFileById(id);
+        webSocketService.broadcastMessage("refresh");
         return ResponseEntity.ok("File deleted successfully.");
     }
 
